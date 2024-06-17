@@ -1,15 +1,17 @@
 <template>
-  <div>
-    <h1>Welcome to Mensa App</h1>
+  <div id="app">
+    <MensaList />
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+import MensaList from './components/MensaList.vue';
+
+export default defineComponent({
   name: 'App',
-};
+  components: {
+    MensaList
+  }
+});
 </script>
-
-<style>
-
-</style>
