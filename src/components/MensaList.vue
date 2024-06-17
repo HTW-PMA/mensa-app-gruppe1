@@ -9,25 +9,18 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-
-interface Mensa {
-  id: number;
-  name: string;
-}
+import { Mensa } from '../types/mensainterface'; // Pfad anpassen
+import { fetchMensas } from '../types/mensaService'; // Pfad anpassen
 
 export default defineComponent({
   name: 'MensaList',
   setup() {
     const mensas = ref<Mensa[]>([]);
-    const apiKey = 'O6omy9/uhnJIC0GVQd8Rho9WQOa2BrQMitety5vl4SFCw7i8WpiZdfaAKXBaEhGzZDsJ5GjFSvVHfKqh5SwSPK0JvaaNiYvsJMc/AdxVOfsBoIe32th3A36V/QR0QJ7mQKJOE4CBqR0VedpKenMqrfVLMj/4fj1EXG9f5SQ2BHVXopOYvPBQ+b3cWsRtP7eOX9sCAPRlCmrzAj6Gk11hhdOND1RPkHUGSgaRnS50JQ06+PXA+DgrevMnJoiebrZIzfUU6xRgW1ZFPeaNxGZLoG15BmB1tuaBXge97qiQ5F0NGmM3LF9CApuYNOH39hWa8bXOCAYRH2u2d29+Ei09DQ==';
+    const apiKey = 'EjGTzhCqu7TbBUwpN2x4H7YIRf5LIepS28Uc+Pn2k8IBkc05wDI6F+ZQbA13f67qSlENe8AU3UqL5Zzck+rERaYxrXKqISZQ6ut9/KIgGJoHs1VMlNvp0DfvWa69WzXyvdEEtTUN/3tsfxeGDG//UmzHTps9DnYKemomcgwGEPx+4U/dbv4L/QeHoTph8dLISK9ipWP2By5SjFKPreZoAJWuOy/6+u5uF23irGt5wBVZCFsdrvJUiIN72QURoF6aR9dzT+a8g1i9w9cFnTFxTtewRtm4lFY2ME/nmMIHKkchUuqfT0bNsxZL2dPfIo1E3ahzuNctbqUfdBBv1lslYw==';
 
-    const fetchMensas = async () => {
+    const fetchMensasList = async () => {
       try {
-        const response = await fetch(`https://mensa.gregorflachs.de/api/mensas?apiKey=${apiKey}`);
-        if (!response.ok) {
-          throw new Error('API request failed');
-        }
-        const data: Mensa[] = await response.json();
+        const data = await fetchMensas(apiKey);
         mensas.value = data;
       } catch (error) {
         console.error('Error fetching mensas:', error);
@@ -35,10 +28,10 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      fetchMensas();
+      fetchMensasList();
     });
 
     return { mensas };
-  }
+  },
 });
 </script>
