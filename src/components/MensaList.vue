@@ -9,8 +9,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
-import { Mensa } from '../types/mensainterface'; // Pfad anpassen
-import { fetchMensas } from '../types/mensaService'; // Pfad anpassen
+import { Mensa } from '../types/mensainterface';
+import { fetchMensas } from '../types/mensaService';
 
 export default defineComponent({
   name: 'MensaList',

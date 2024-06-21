@@ -1,7 +1,8 @@
 import { createApp } from 'vue';
+import './style.css';
 import App from './App.vue';
 import MensaList from './components/MensaList.vue';
-import './registerServiceWorker'
+
 
 const app = createApp(App);
 app.component('MensaList', MensaList);

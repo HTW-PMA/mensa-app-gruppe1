@@ -1,7 +1,5 @@
-
-
-import { Mensa } from './mensainterface';
-
+// src/services/mensaService.ts
+import { Mensa } from '../types/mensainterface';
 export async function fetchMensas(apiKey: string): Promise<Mensa[]> {
   const response = await fetch('https://mensa.gregorflachs.de/api/v1/canteen', {
     headers: {

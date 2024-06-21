@@ -1,0 +1,16 @@
+{
+  "name": "Mensa Marvel App",
+  "short_name": "Mensa Marvel",
+  "theme_color": "#F7f7f7",
+  "background_color": "#F7f7f7",
+  "start_url": "/mensen",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/img/safari-pinned-tab.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
