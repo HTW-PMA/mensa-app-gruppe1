@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import './style.css';
+import './Style.css';
 import App from './App.vue';
 import MensaList from './components/MensaList.vue';
 
