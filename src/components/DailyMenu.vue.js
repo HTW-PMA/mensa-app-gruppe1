@@ -1,26 +1,21 @@
 /* __placeholder__ */
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { fetchMeals } from '../types/menuService';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 const meals = ref([]);
 const loading = ref(true);
-const filter = ref('');
-const fetchMenu = async () => {
+const fetchMealsList = async () => {
     try {
         meals.value = await fetchMeals();
+        console.log('Fetched meals:', meals.value);
         loading.value = false;
     }
     catch (error) {
-        console.error('Error fetching daily menu:', error);
+        console.error('Error fetching meals:', error);
         loading.value = false;
     }
 };
-const filteredMeals = computed(() => {
-    if (!filter.value)
-        return meals.value;
-    return meals.value.filter(meal => meal.badges.some(badge => badge.name.toLowerCase().includes(filter.value.toLowerCase())));
-});
-onMounted(fetchMenu);
+onMounted(fetchMealsList);
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;
 const __VLS_modelEmitsType = {};
@@ -35,18 +30,22 @@ function __VLS_template() {
     // CSS variable injection 
     // CSS variable injection end 
     let __VLS_resolvedLocalAndGlobalComponents;
-    if (__VLS_ctx.meals.length > 0) {
-        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
-        __VLS_elementAsFunction(__VLS_intrinsicElements.h2, __VLS_intrinsicElements.h2)({});
+    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("daily-menu-container") }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.h1, __VLS_intrinsicElements.h1)({});
+    if (__VLS_ctx.loading) {
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("loading-spinner") }, });
         // @ts-ignore
-        [meals,];
-        __VLS_elementAsFunction(__VLS_intrinsicElements.ul, __VLS_intrinsicElements.ul)({});
-        for (const [meal] of __VLS_getVForSourceType((__VLS_ctx.filteredMeals))) {
-            __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({ key: ((meal.ID)), });
+        [loading,];
+    }
+    else if (__VLS_ctx.meals.length > 0) {
+        __VLS_elementAsFunction(__VLS_intrinsicElements.ul, __VLS_intrinsicElements.ul)({ ...{ class: ("meal-list") }, });
+        for (const [meal] of __VLS_getVForSourceType((__VLS_ctx.meals))) {
+            __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({ key: ((meal.ID)), ...{ class: ("meal-item") }, });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("meal-details") }, });
             __VLS_elementAsFunction(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({});
             (meal.name);
             // @ts-ignore
-            [filteredMeals,];
+            [meals, meals,];
             __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
             (meal.category);
             __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
@@ -84,10 +83,14 @@ function __VLS_template() {
         }
     }
     else {
-        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
         __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
     }
     if (typeof __VLS_styleScopedClasses === 'object' && !Array.isArray(__VLS_styleScopedClasses)) {
+        __VLS_styleScopedClasses['daily-menu-container'];
+        __VLS_styleScopedClasses['loading-spinner'];
+        __VLS_styleScopedClasses['meal-list'];
+        __VLS_styleScopedClasses['meal-item'];
+        __VLS_styleScopedClasses['meal-details'];
     }
     var __VLS_slots;
     return __VLS_slots;
@@ -98,7 +101,7 @@ function __VLS_template() {
         setup() {
             return {
                 meals: meals,
-                filteredMeals: filteredMeals,
+                loading: loading,
             };
         },
     });
