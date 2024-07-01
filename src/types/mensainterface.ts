@@ -1,6 +1,7 @@
 export interface Mensa {
   id: string;
   name: string;
+  img: string;
   address: {
     street: string;
     city: string;

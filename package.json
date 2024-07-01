@@ -11,7 +11,9 @@
     "lint": "eslint \"src/**/*.{ts,tsx}\" --fix"
   },
   "dependencies": {
-    "vue": "^3.4.21"
+    "@types/vue-router": "^2.0.0",
+    "vue": "^3.4.21",
+    "vue-router": "^4.0.13"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.11.0",
