@@ -1,21 +1,19 @@
+
 <template>
   <div class="home-view">
-    <!-- Header mit Begrüßungstext -->
     <header class="header">
       <h1>Willkommen zur Mensa Marvel App</h1>
       <p>Entdecke das Tagesmenü, spezielle Angebote und mehr!</p>
     </header>
-    <!-- Footer mit Links und Kontaktinformationen -->
     <footer class="footer">
       <nav>
         <ul>
-          <li><a href="/about">Über Uns</a></li>
-          <li><a href="/contact">Kontakt</a></li>
         </ul>
       </nav>
     </footer>
   </div>
 </template>
+
 
 <script setup lang="ts">
 

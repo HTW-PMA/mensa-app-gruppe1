@@ -1,11 +1,10 @@
-import { createApp } from 'vue';
 import './Style.css';
+import { createApp } from 'vue';
 import App from './App.vue';
-import MensaList from './components/MensaList.vue';
-import router from './routers/router';
+import router from './router'
 
+const app = createApp(App)
 
-const app = createApp(App);
-app.component('MensaList', MensaList);
-app.mount('#app');
-app.use(router);
+app.use(router)
+
+app.mount('#app')

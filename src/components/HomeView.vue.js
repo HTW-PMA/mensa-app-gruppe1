@@ -2,7 +2,7 @@
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;
-let __VLS_modelEmitsType;
+const __VLS_modelEmitsType = {};
 function __VLS_template() {
     let __VLS_ctx;
     /* Components */
@@ -21,10 +21,6 @@ function __VLS_template() {
     __VLS_elementAsFunction(__VLS_intrinsicElements.footer, __VLS_intrinsicElements.footer)({ ...{ class: ("footer") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.nav, __VLS_intrinsicElements.nav)({});
     __VLS_elementAsFunction(__VLS_intrinsicElements.ul, __VLS_intrinsicElements.ul)({});
-    __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({});
-    __VLS_elementAsFunction(__VLS_intrinsicElements.a, __VLS_intrinsicElements.a)({ href: ("/about"), });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({});
-    __VLS_elementAsFunction(__VLS_intrinsicElements.a, __VLS_intrinsicElements.a)({ href: ("/contact"), });
     if (typeof __VLS_styleScopedClasses === 'object' && !Array.isArray(__VLS_styleScopedClasses)) {
         __VLS_styleScopedClasses['home-view'];
         __VLS_styleScopedClasses['header'];
@@ -34,7 +30,8 @@ function __VLS_template() {
     return __VLS_slots;
     const __VLS_componentsOption = {};
     let __VLS_name;
-    const __VLS_internalComponent = (await import('vue')).defineComponent({
+    let __VLS_defineComponent;
+    const __VLS_internalComponent = __VLS_defineComponent({
         setup() {
             return {};
         },

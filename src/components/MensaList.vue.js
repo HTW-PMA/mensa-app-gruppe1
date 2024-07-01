@@ -108,6 +108,6 @@ function __VLS_template() {
     return __VLS_slots;
     const __VLS_componentsOption = {};
     const __VLS_name = 'MensaList';
-    const __VLS_internalComponent = (await import('./MensaList.vue')).default;
+    let __VLS_internalComponent;
 }
 //# sourceMappingURL=MensaList.vue.js.map

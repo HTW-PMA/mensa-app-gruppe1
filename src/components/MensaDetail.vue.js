@@ -18,7 +18,7 @@ const fetchMensaDetail = async () => {
 onMounted(fetchMensaDetail);
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;
-let __VLS_modelEmitsType;
+const __VLS_modelEmitsType = {};
 function __VLS_template() {
     let __VLS_ctx;
     /* Components */
@@ -115,7 +115,8 @@ function __VLS_template() {
     return __VLS_slots;
     const __VLS_componentsOption = {};
     let __VLS_name;
-    const __VLS_internalComponent = (await import('vue')).defineComponent({
+    let __VLS_defineComponent;
+    const __VLS_internalComponent = __VLS_defineComponent({
         setup() {
             return {
                 mensa: mensa,
