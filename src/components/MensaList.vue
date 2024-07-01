@@ -4,17 +4,20 @@
 
     <div v-if="loading" class="loading-spinner">
 
-      Loading...
     </div>
 
     <ul v-else-if="mensas.length > 0" class="mensa-list">
       <li v-for="mensa in mensas" :key="mensa.id" class="mensa-item">
         <img
+
           v-if="mensa.url && mensa.url !== ''"
           :src="mensa.url"
           :alt="`Mensa ${mensa.name} Image`"
           loading="lazy"
           class="mensa-image"
+
+
+
         />
         <div class="mensa-details">
           <h2>{{ mensa.name }}</h2>

@@ -7,9 +7,9 @@
   "display": "fullscreen",
   "icons": [
     {
-      "src": "/img/safari-pinned-tab.png",
+      "src": "/img/safari-pinned-tab.svg",
       "sizes": "16x16",
-      "type": "image/png",
+      "type": "image/svg",
       "purpose": "any"
     }
   ]

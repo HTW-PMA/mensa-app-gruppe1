@@ -5,8 +5,6 @@
       <h1>Willkommen zur Mensa Marvel App</h1>
       <p>Entdecke das Tagesmenü, spezielle Angebote und mehr!</p>
     </header>
-
-
     <!-- Footer mit Links und Kontaktinformationen -->
     <footer class="footer">
       <nav>

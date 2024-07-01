@@ -2,8 +2,6 @@
 import { createApp, h } from 'vue';
 import router from './routers/router';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
-// Importieren der Komponenten ist hier nicht notwendig, da sie über die Routen gehandhabt werden
-// Erstelle die App-Instanz und verwende den Router
 createApp({
     setup() { },
     render: () => h('router-view'),
@@ -33,6 +31,15 @@ function __VLS_template() {
     const __VLS_2 = __VLS_1({}, ...__VLS_functionalComponentArgsRest(__VLS_1));
     ({}({}));
     const __VLS_5 = __VLS_pickFunctionalComponentCtx(__VLS_0, __VLS_2);
+    const __VLS_6 = {}.MensaList;
+    ({}.MensaList);
+    __VLS_components.MensaList;
+    // @ts-ignore
+    [MensaList,];
+    const __VLS_7 = __VLS_asFunctionalComponent(__VLS_6, new __VLS_6({}));
+    const __VLS_8 = __VLS_7({}, ...__VLS_functionalComponentArgsRest(__VLS_7));
+    ({}({}));
+    const __VLS_11 = __VLS_pickFunctionalComponentCtx(__VLS_6, __VLS_8);
     if (typeof __VLS_styleScopedClasses === 'object' && !Array.isArray(__VLS_styleScopedClasses)) {
     }
     var __VLS_slots;

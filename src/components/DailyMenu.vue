@@ -1,6 +1,6 @@
 <template>
   <div v-if="meals.length > 0">
-    <h2>Tagesmenü</h2>
+    <h2> Daily Menu</h2>
     <ul>
       <li v-for="meal in filteredMeals" :key="meal.ID">
         <h3>{{ meal.name }}</h3>
