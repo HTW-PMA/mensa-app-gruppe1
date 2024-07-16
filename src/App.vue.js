@@ -98,9 +98,9 @@ function __VLS_template() {
     // @ts-ignore
     [RouterLink, RouterLink,];
     // @ts-ignore
-    const __VLS_25 = __VLS_asFunctionalComponent(__VLS_24, new __VLS_24({ to: ("/daily-menu"), }));
-    const __VLS_26 = __VLS_25({ to: ("/daily-menu"), }, ...__VLS_functionalComponentArgsRest(__VLS_25));
-    ({}({ to: ("/daily-menu"), }));
+    const __VLS_25 = __VLS_asFunctionalComponent(__VLS_24, new __VLS_24({ to: ("/meal-list"), }));
+    const __VLS_26 = __VLS_25({ to: ("/meal-list"), }, ...__VLS_functionalComponentArgsRest(__VLS_25));
+    ({}({ to: ("/meal-list"), }));
     (__VLS_29.slots).default;
     const __VLS_29 = __VLS_pickFunctionalComponentCtx(__VLS_24, __VLS_26);
     // @ts-ignore

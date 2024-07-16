@@ -24,8 +24,8 @@ const router = createRouter({
       props: true
     },
     {
-      path: '/daily-menu',
-      name: 'daily-menu',
+      path: '/meal-list',
+      name: 'meal-list',
       component: DailyMenu
     }
   ]

@@ -10,7 +10,7 @@ import { RouterLink, RouterView } from 'vue-router'
         <router-link to="/mensa-list">Mensa List</router-link>
         <router-link to="/about">About Us</router-link>
         <router-link to="/contact">Contact</router-link>
-        <router-link to="/daily-menu">Meal</router-link>
+        <router-link to="/meal-list">Meal</router-link>
       </nav>
     </header>
     <RouterView />
@@ -22,7 +22,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 
 <style>
-/* Grundlegende Stile für die gesamte App */
+
 #app {
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

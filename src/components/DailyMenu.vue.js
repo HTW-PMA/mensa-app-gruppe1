@@ -6,8 +6,9 @@ const meals = ref([]);
 const loading = ref(true);
 const fetchMealsList = async () => {
     try {
-        meals.value = await fetchMeals();
-        console.log('Fetched meals:', meals.value);
+        const fetchedMeals = await fetchMeals();
+        console.log('Fetched meals:', fetchedMeals); // Debugging Log
+        meals.value = fetchedMeals;
         loading.value = false;
     }
     catch (error) {

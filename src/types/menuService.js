@@ -8,6 +8,7 @@ export const fetchMeals = async () => {
                 'Authorization': `Bearer ${apiKey}`
             }
         });
+        console.log('API Response:', response.data); // Debugging Log
         return response.data;
     }
     catch (error) {

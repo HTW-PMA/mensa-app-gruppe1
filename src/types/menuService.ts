@@ -14,6 +14,7 @@ export const fetchMeals = async (): Promise<Meal[]> => {
         'Authorization': `Bearer ${apiKey}`
       }
     });
+    console.log('API Response:', response.data); // Debugging Log
     return response.data;
   } catch (error) {
     console.error('Error fetching meals:', error);
