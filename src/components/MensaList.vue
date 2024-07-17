@@ -1,25 +1,19 @@
 <template>
   <div class="mensa-list-container">
-    <h1>{{ t('mensaList') }}</h1>
+    <h1>{{ t('mensaList.title') }}</h1>
 
     <div class="filters">
-      <input v-model="filters.name" @input="applyFilters" placeholder="filterName" />
-      <input v-model="filters.zipcode" @input="applyFilters" placeholder="filterZipcode" />
-      <input v-model="filters.district" @input="applyFilters" placeholder="filterDistrict" />
-      <input v-model="filters.openAt" @input="applyFilters" placeholder="filterOpenAt" type="time" />
+      <input v-model="filters.name" @input="applyFilters" placeholder="{{ t('filters.filterName') }}" />
+      <input v-model="filters.zipcode" @input="applyFilters" placeholder="{{ t('filters.filterZipcode') }}" />
+      <input v-model="filters.district" @input="applyFilters" placeholder="{{ t('filters.filterDistrict') }}" />
+      <input v-model="filters.openAt" @input="applyFilters" placeholder="{{ t('filters.filterOpenAt') }}" type="time" />
     </div>
 
     <div v-if="loading" class="loading-spinner"></div>
 
     <ul v-else-if="filteredMensas.length > 0" class="mensa-list">
       <li v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">
-        <img
-            v-if="mensa.img"
-            :src="getImgUrl(mensa.img)"
-            :alt="Mensa ${mensa.name} Image"
-            loading="lazy"
-            class="mensa-image"
-        />
+        <img v-if="mensa.img" :src="getImgUrl(mensa.img)" :alt="`Mensa ${mensa.name} Image`" loading="lazy" class="mensa-image" />
         <div class="mensa-details">
           <h2>{{ mensa.name }}</h2>
           <p>{{ mensa.address.street }}, {{ mensa.address.city }}</p>
@@ -29,7 +23,7 @@
             <li v-for="day in mensa.businessDays" :key="day.day">
               <strong>{{ day.day }}</strong>:
               <ul>
-                <li v-if="day.businessHours.length > 0" v-for="hour in day.businessHours" :key="${hour.openAt}-${hour.closeAt}">
+                <li v-if="day.businessHours.length > 0" v-for="hour in day.businessHours" :key="`${hour.openAt}-${hour.closeAt}`">
                   {{ hour.openAt }} - {{ hour.closeAt }} ({{ hour.businessHourType }})
                 </li>
                 <li v-else>{{ t('closed') }}</li>
@@ -50,12 +44,13 @@
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { fetchMensas } from '../types/mensaService';
-import localforage from '../localforage';
-import { Mensa } from '../types/mensainterface';
+import localforage from 'localforage';
+import {Mensa} from "@/types/mensainterface"; // corrected import
 
 const { t } = useI18n();
+
 const mensas = ref<Mensa[]>([]);
-const loading = ref(true);
+const loading = ref<boolean>(true);
 const filters = ref({
   name: '',
   zipcode: '',
@@ -73,7 +68,7 @@ const applyFilters = () => {
 
 const fetchMensasList = async () => {
   try {
-    const data = await fetchMensas();
+    const data = await fetchMensas(); // assuming fetchMensas returns an array of Mensa objects
     mensas.value = data;
     loading.value = false;
 
@@ -132,5 +127,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-
+/* CSS-Stile bleiben unverändert */
 </style>

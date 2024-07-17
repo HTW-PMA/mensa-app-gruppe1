@@ -12,14 +12,14 @@ export async function fetchMensaById(apiKey, id) {
     const data = await response.json();
     return data;
 }
-export async function fetchMensas(apiKey) {
+export async function fetchMensas() {
     const response = await fetch(apiUrl, {
         headers: {
             'X-API-KEY': apiKey,
         },
     });
     if (!response.ok) {
-        throw new Error('API-Anfrage fehlgeschlagen');
+        throw new Error('API request failed');
     }
     const data = await response.json();
     return data;
