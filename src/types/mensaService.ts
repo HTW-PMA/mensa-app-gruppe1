@@ -18,7 +18,7 @@ export async function fetchMensaById(apiKey: string, id: string): Promise<Mensa>
   return data;
 }
 
-export async function fetchMensas(apiKey: string): Promise<Mensa[]> {
+export async function fetchMensas(): Promise<Mensa[]> {
   const response = await fetch(apiUrl, {
     headers: {
       'X-API-KEY': apiKey,
@@ -26,7 +26,7 @@ export async function fetchMensas(apiKey: string): Promise<Mensa[]> {
   });
 
   if (!response.ok) {
-    throw new Error('API-Anfrage fehlgeschlagen');
+    throw new Error('API request failed');
   }
 
   const data: Mensa[] = await response.json();
