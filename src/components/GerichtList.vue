@@ -1,31 +1,23 @@
 <template>
-  <div class="daily-menu-container">
-    <h1>Daily Menu</h1>
+  <div class="GerichtList">
+    <h1>Gerichte</h1>
 
     <div v-if="loading" class="loading-spinner">
       Loading...
     </div>
 
-    <ul v-else-if="meals.length > 0" class="meal-list">
+    <ul v-else-if="meals.length > 0" class="gericht-list">
       <li v-for="meal in meals" :key="meal.ID" class="meal-item">
         <div class="meal-details">
           <h3>{{ meal.name }}</h3>
           <p>{{ meal.category }}</p>
-          <p>Price: {{ meal.prices[0].price }} € ({{ meal.prices[0].priceType }})</p>
+          <p>Price: {{ formatPrice(meal.prices) }}</p>
           <ul>
             <li v-for="additive in meal.additives" :key="additive.ID">{{ additive.text }}</li>
           </ul>
-          <ul>
-            <li v-for="badge in meal.badges" :key="badge.ID">{{ badge.name }}: {{ badge.description }}</li>
-          </ul>
-          <p>Water Balance: {{ meal.waterBilanz }} L</p>
-          <p>CO2 Balance: {{ meal.co2Bilanz }} kg</p>
           <h4>Reviews</h4>
           <div v-for="review in meal.mealReviews" :key="review.ID">
             <p>Average Rating: {{ review.averageRating }}</p>
-            <ul>
-              <li v-for="rating in review.detailRatings" :key="rating.name">{{ rating.name }}: {{ rating.rating }}</li>
-            </ul>
             <p>{{ review.comment }}</p>
           </div>
         </div>
@@ -40,17 +32,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { fetchMeals } from '../types/menuService';
-import type { Meal } from '../types/menuInterface';
+import { fetchMeal } from '../types/GerichteService';
+import type { Meal, Price, Additive } from '../types/GerichteInterface';
 
 const meals = ref<Meal[]>([]);
-const loading = ref<boolean>(true);
+const loading = ref(true);
+const apiKey = 'EjGTzhCqu7TbBUwpN2x4H7YIRf5LIepS28Uc+Pn2k8IBkc05wDI6F+ZQbA13f67qSlENe8AU3UqL5Zzck+rERaYxrXKqISZQ6ut9/KIgGJoHs1VMlNvp0DfvWa69WzXyvdEEtTUN/3tsfxeGDG//UmzHTps9DnYKemomcgwGEPx+4U/dbv4L/QeHoTph8dLISK9ipWP2By5SjFKPreZoAJWuOy/6+u5uF23irGt5wBVZCFsdrvJUiIN72QURoF6aR9dzT+a8g1i9w9cFnTFxTtewRtm4lFY2ME/nmMIHKkchUuqfT0bNsxZL2dPfIo1E3ahzuNctbqUfdBBv1lslYw==';
 
 const fetchMealsList = async () => {
   try {
-    const fetchedMeals = await fetchMeals();
-    console.log('Fetched meals:', fetchedMeals); // Debugging Log
-    meals.value = fetchedMeals;
+    const data = await fetchMeal(apiKey);
+    meals.value = data;
     loading.value = false;
   } catch (error) {
     console.error('Error fetching meals:', error);
@@ -58,11 +50,22 @@ const fetchMealsList = async () => {
   }
 };
 
-onMounted(fetchMealsList);
+onMounted(() => {
+  fetchMealsList();
+});
+
+// Helper function to format price
+const formatPrice = (prices: Price[]): string => {
+  if (prices.length === 0) {
+    return 'Price not available';
+  }
+  const price = prices[0]; // Assuming there is only one price per meal
+  return `${price.price.toFixed(2)} € (${price.priceType})`;
+};
 </script>
 
 <style scoped>
-.daily-menu-container {
+.GerichtList {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
@@ -75,25 +78,24 @@ onMounted(fetchMealsList);
   margin-top: 20px;
 }
 
-.meal-list {
+.gericht-list {
   list-style-type: none;
   padding: 0;
 }
 
 .meal-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
   margin-bottom: 20px;
 }
 
 .meal-details {
-  flex: 1;
   text-align: left;
 }
 
 @media (max-width: 600px) {
   .meal-item {
-    flex-direction: column;
     text-align: center;
   }
 }

@@ -1,7 +1,7 @@
 export interface Mensa {
   id: string;
   name: string;
-  img: string;
+  img: File;
   address: {
     street: string;
     city: string;
@@ -18,7 +18,7 @@ export interface Mensa {
   };
   businessDays: {
     day: string;
-    businesshours: {
+    businessHours: {
       openAt: string;
       closeAt: string;
       businessHourType: string;

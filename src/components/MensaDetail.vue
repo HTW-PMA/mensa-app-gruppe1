@@ -10,7 +10,7 @@
       <li v-for="day in mensa.businessDays" :key="day.day">
         <strong>{{ day.day }}</strong>:
         <ul>
-          <li v-for="hour in day.businesshours" :key="`${hour.openAt}-${hour.closeAt}`">
+          <li v-for="hour in day.businessHours" :key="`${hour.openAt}-${hour.closeAt}`">
             {{ hour.openAt }} - {{ hour.closeAt }} ({{ hour.businessHourType }})
           </li>
         </ul>

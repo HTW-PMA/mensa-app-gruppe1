@@ -69,7 +69,7 @@ function __VLS_template() {
             // @ts-ignore
             [mensa,];
             __VLS_elementAsFunction(__VLS_intrinsicElements.ul, __VLS_intrinsicElements.ul)({});
-            for (const [hour] of __VLS_getVForSourceType((day.businesshours))) {
+            for (const [hour] of __VLS_getVForSourceType((day.businessHours))) {
                 __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({ key: ((`${hour.openAt}-${hour.closeAt}`)), });
                 (hour.openAt);
                 (hour.closeAt);

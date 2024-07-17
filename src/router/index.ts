@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../components/HomeView.vue';
 import MensaList from '../components/MensaList.vue';
 import MensaDetailView from '../components/MensaDetail.vue';
-import DailyMenu from '../components/DailyMenu.vue';
+import GerichtList from '../components/GerichtList.vue'; // Import the new component
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,13 +24,11 @@ const router = createRouter({
       props: true
     },
     {
-      path: '/meal-list',
-      name: 'meal-list',
-      component: DailyMenu
+      path: '/gericht-list',
+      name: 'gericht-list',
+      component: GerichtList
     }
   ]
 });
-
-
 
 export default router;

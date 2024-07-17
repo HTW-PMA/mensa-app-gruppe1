@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'; // Importieren der defineConfig Funktion von Vite
 import vue from '@vitejs/plugin-vue'; // Importieren des Vue Plugins für Vite
 import { VitePWA } from 'vite-plugin-pwa'; // Importieren des Vite PWA Plugins
-
+import path from 'path';
 export default defineConfig({
   plugins: [vue(), // Verwenden des Vue Plugins
     VitePWA({
@@ -52,4 +52,9 @@ export default defineConfig({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  }
 });
