@@ -1,5 +1,6 @@
 <template>
   <div class="mensa-list-container">
+    <img src="@/assets/Mensa%20Marvel%20(2).jpg" alt="Mensa Marvel" class="mensa-logo" />
     <h1>Mensa List</h1>
 
     <div class="filters">

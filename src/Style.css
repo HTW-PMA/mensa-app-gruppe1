@@ -2,11 +2,9 @@
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
-
     color-scheme: light dark;
     color: rgba(255, 255, 255, 0.87);
     background-color: #242424;
-
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -15,11 +13,12 @@
 
 a {
     font-weight: 500;
-    color: #646cff;
+    color: #ffeb3b; /* Gelbe Farbe */
     text-decoration: inherit;
 }
+
 a:hover {
-    color: #535bf2;
+    color: #fdd835; /* Dunklerer Gelbton beim Hover */
 }
 
 body {
@@ -42,13 +41,15 @@ button {
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
-    background-color: #1a1a1a;
+    background-color: #fbc02d; /* Gelber Hintergrund für Buttons */
     cursor: pointer;
     transition: border-color 0.25s;
 }
+
 button:hover {
-    border-color: #646cff;
+    border-color: #ffeb3b; /* Hellerer Gelbton für den Rahmen beim Hover */
 }
+
 button:focus,
 button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
@@ -67,15 +68,16 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
     :root {
-        color: #213547;
-        background-color: #ffffff;
+        color: #213547; /* Dunkelgrüner Text im hellen Modus */
+        background-color: #ffffff; /* Weißer Hintergrund im hellen Modus */
+    }
+    a {
+        color: #ffd54f; /* Gelbe Schriftfarbe für Links im hellen Modus */
     }
     a:hover {
-        color: #747bff;
+        color: #fbc02d; /* Dunklerer Gelbton beim Hover im hellen Modus */
     }
     button {
-        background-color: #f9f9f9;
+        background-color: #f9f9f9; /* Hellerer Grauton für Buttons im hellen Modus */
     }
-
-
 }

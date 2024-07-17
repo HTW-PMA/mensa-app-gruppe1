@@ -3,6 +3,7 @@
     <header class="header">
       <h1>{{ t('welcome') }}</h1>
       <p>{{ t('discover') }}</p>
+      <img src="@/assets/Mensa%20Marvel%20(2).jpg" alt="Mensa Marvel" class="mensa-logo" />
     </header>
     <footer class="footer">
       <nav>

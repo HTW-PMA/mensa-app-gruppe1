@@ -1,5 +1,6 @@
 <template>
   <div class="GerichtList">
+    <img src="@/assets/Mensa%20Marvel%20(2).jpg" alt="Mensa Marvel" class="mensa-logo" />
     <h1>Gerichte</h1>
 
     <!-- Filters -->
