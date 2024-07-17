@@ -1,6 +1,7 @@
 /* __placeholder__ */
 import { defineComponent, ref, computed, onMounted } from 'vue';
 import { fetchMensas } from '../types/mensaService';
+import localforage from 'localforage'; // Import von localforage hinzugefügt
 export default defineComponent({
     name: 'MensaList',
     setup() {
@@ -18,6 +19,8 @@ export default defineComponent({
                 const data = await fetchMensas(apiKey);
                 mensas.value = data;
                 loading.value = false;
+                // Speichern der Daten in IndexedDB
+                await localforage.setItem('mensaData', data);
             }
             catch (error) {
                 console.error('Error fetching mensas:', error);
@@ -56,6 +59,19 @@ export default defineComponent({
             else {
                 console.warn('IntersectionObserver target not found');
             }
+            // Explicitly type the callback function for getItem
+            localforage.getItem('mensaData').then((data) => {
+                if (data) {
+                    mensas.value = data;
+                    loading.value = false;
+                }
+                else {
+                    fetchMensasList(); // Wenn nicht vorhanden, neue Daten abrufen
+                }
+            }).catch((error) => {
+                console.error('Error fetching mensas from IndexedDB:', error);
+                fetchMensasList(); // Im Fehlerfall ebenfalls neue Daten abrufen
+            });
         });
         return { mensas, loading, filters, filteredMensas, applyFilters, getImgUrl };
     },

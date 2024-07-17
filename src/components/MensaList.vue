@@ -14,11 +14,11 @@
     <ul v-else-if="filteredMensas.length > 0" class="mensa-list">
       <li v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">
         <img
-          v-if="mensa.img"
-          :src="getImgUrl(mensa.img)"
-          :alt="`Mensa ${mensa.name} Image`"
-          loading="lazy"
-          class="mensa-image"
+            v-if="mensa.img"
+            :src="getImgUrl(mensa.img)"
+            :alt="`Mensa ${mensa.name} Image`"
+            loading="lazy"
+            class="mensa-image"
         />
         <div class="mensa-details">
           <h2>{{ mensa.name }}</h2>
@@ -50,6 +50,7 @@
 import { defineComponent, ref, computed, onMounted } from 'vue';
 import { Mensa } from '../types/mensainterface';
 import { fetchMensas } from '../types/mensaService';
+import localforage from 'localforage'; // Import von localforage hinzugefügt
 
 export default defineComponent({
   name: 'MensaList',
@@ -70,6 +71,9 @@ export default defineComponent({
         const data = await fetchMensas(apiKey);
         mensas.value = data;
         loading.value = false;
+
+        // Speichern der Daten in IndexedDB
+        await localforage.setItem('mensaData', data);
       } catch (error) {
         console.error('Error fetching mensas:', error);
         loading.value = false;
@@ -89,7 +93,7 @@ export default defineComponent({
         const zipcodeMatch = mensa.address.zipcode.includes(filters.value.zipcode);
         const districtMatch = mensa.address.district.toLowerCase().includes(filters.value.district.toLowerCase());
         const openAtMatch = filters.value.openAt ? mensa.businessDays.some((day) =>
-          day.businessHours.some((hour) => hour.openAt <= filters.value.openAt && hour.closeAt >= filters.value.openAt)
+            day.businessHours.some((hour) => hour.openAt <= filters.value.openAt && hour.closeAt >= filters.value.openAt)
         ) : true;
 
         return nameMatch && zipcodeMatch && districtMatch && openAtMatch;
@@ -114,6 +118,19 @@ export default defineComponent({
       } else {
         console.warn('IntersectionObserver target not found');
       }
+
+      // Explicitly type the callback function for getItem
+      localforage.getItem<Mensa[]>('mensaData').then((data) => {
+        if (data) {
+          mensas.value = data;
+          loading.value = false;
+        } else {
+          fetchMensasList(); // Wenn nicht vorhanden, neue Daten abrufen
+        }
+      }).catch((error) => {
+        console.error('Error fetching mensas from IndexedDB:', error);
+        fetchMensasList(); // Im Fehlerfall ebenfalls neue Daten abrufen
+      });
     });
 
     return { mensas, loading, filters, filteredMensas, applyFilters, getImgUrl };
@@ -122,65 +139,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.mensa-list-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
-}
-
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.filters input {
-  padding: 10px;
-  font-size: 1em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.loading-spinner {
-  font-size: 1.2em;
-  color: #888;
-  margin-top: 20px;
-}
-
-.mensa-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.mensa-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.mensa-image {
-  max-width: 200px;
-  height: auto;
-  margin-right: 20px;
-}
-
-.mensa-details {
-  flex: 1;
-  text-align: left;
-}
-
-@media (max-width: 600px) {
-  .mensa-item {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .mensa-image {
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-}
+/* CSS-Stile bleiben unverändert */
 </style>

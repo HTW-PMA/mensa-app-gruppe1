@@ -2,12 +2,22 @@
   <div class="GerichtList">
     <h1>Gerichte</h1>
 
+    <!-- Filters -->
+    <div class="filters">
+      <input v-model="searchQuery" @input="applyFilters" placeholder="Nach Gericht suchen" />
+      <select v-model="sortOption" @change="applyFilters">
+        <option value="name">Name</option>
+        <option value="category">Kategorie</option>
+      </select>
+    </div>
+
     <div v-if="loading" class="loading-spinner">
       Loading...
     </div>
 
-    <ul v-else-if="meals.length > 0" class="gericht-list">
-      <li v-for="meal in meals" :key="meal.ID" class="meal-item">
+    <!-- List of Meals -->
+    <ul v-else-if="filteredMeals.length > 0" class="gericht-list">
+      <li v-for="meal in filteredMeals" :key="meal.ID" class="meal-item">
         <div class="meal-details">
           <h3>{{ meal.name }}</h3>
           <p>{{ meal.category }}</p>
@@ -46,6 +56,7 @@
       </li>
     </ul>
 
+    <!-- No meals found message -->
     <p v-else>
       No meals found. Please try again later or contact support.
     </p>
@@ -53,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { fetchMeal } from '../types/GerichteService';
 import type { Meal } from '../types/GerichteInterface';
 
@@ -81,19 +92,38 @@ const toggleDetails = (meal: Meal) => {
 };
 
 onMounted(() => {
-  const intersectionObserver = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) {
-      fetchMealsList();
-      intersectionObserver.disconnect();
-    }
-  });
-  const target = document.querySelector('.GerichtList');
-  if (target) {
-    intersectionObserver.observe(target);
-  } else {
-    console.warn('IntersectionObserver target not found');
-  }
+  fetchMealsList();
 });
+
+// Reactive search and sorting
+const searchQuery = ref('');
+const sortOption = ref('name'); // Default sorting option
+
+const filteredMeals = computed(() => {
+  let filteredList = meals.value;
+
+  // Filter by search query
+  if (searchQuery.value) {
+    const lowerCaseQuery = searchQuery.value.toLowerCase();
+    filteredList = filteredList.filter(meal =>
+        meal.name.toLowerCase().includes(lowerCaseQuery)
+    );
+  }
+
+  // Sort by selected option
+  if (sortOption.value === 'name') {
+    filteredList.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortOption.value === 'category') {
+    filteredList.sort((a, b) => a.category.localeCompare(b.category));
+  }
+
+  return filteredList;
+});
+
+const applyFilters = () => {
+  // Nothing to do here, since computed property `filteredMeals` handles the filtering and sorting
+};
+
 </script>
 
 <style scoped>
@@ -108,6 +138,10 @@ onMounted(() => {
   font-size: 1.2em;
   color: #888;
   margin-top: 20px;
+}
+
+.filters {
+  margin-bottom: 20px;
 }
 
 .gericht-list {
