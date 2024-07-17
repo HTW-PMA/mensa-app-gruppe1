@@ -1,5 +1,10 @@
 /* __placeholder__ */
+import { useI18n } from 'vue-i18n';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
+const { t, locale } = useI18n();
+const changeLocale = (lang) => {
+    locale.value = lang;
+};
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;
 const __VLS_modelEmitsType = {};
@@ -17,10 +22,28 @@ function __VLS_template() {
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("home-view") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.header, __VLS_intrinsicElements.header)({ ...{ class: ("header") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.h1, __VLS_intrinsicElements.h1)({});
+    (__VLS_ctx.t('welcome'));
+    // @ts-ignore
+    [t,];
     __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
+    (__VLS_ctx.t('discover'));
+    // @ts-ignore
+    [t,];
     __VLS_elementAsFunction(__VLS_intrinsicElements.footer, __VLS_intrinsicElements.footer)({ ...{ class: ("footer") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.nav, __VLS_intrinsicElements.nav)({});
     __VLS_elementAsFunction(__VLS_intrinsicElements.ul, __VLS_intrinsicElements.ul)({});
+    __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({});
+    __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({ ...{ onClick: (...[$event]) => {
+                __VLS_ctx.changeLocale('en');
+                // @ts-ignore
+                [changeLocale,];
+            } }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({});
+    __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({ ...{ onClick: (...[$event]) => {
+                __VLS_ctx.changeLocale('de');
+                // @ts-ignore
+                [changeLocale,];
+            } }, });
     if (typeof __VLS_styleScopedClasses === 'object' && !Array.isArray(__VLS_styleScopedClasses)) {
         __VLS_styleScopedClasses['home-view'];
         __VLS_styleScopedClasses['header'];
@@ -33,7 +56,10 @@ function __VLS_template() {
     let __VLS_defineComponent;
     const __VLS_internalComponent = __VLS_defineComponent({
         setup() {
-            return {};
+            return {
+                t: t,
+                changeLocale: changeLocale,
+            };
         },
     });
 }

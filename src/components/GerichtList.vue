@@ -11,14 +11,36 @@
         <div class="meal-details">
           <h3>{{ meal.name }}</h3>
           <p>{{ meal.category }}</p>
-          <p>Price: {{ formatPrice(meal.prices) }}</p>
           <ul>
-            <li v-for="additive in meal.additives" :key="additive.ID">{{ additive.text }}</li>
+            <li v-for="price in meal.prices" :key="price.priceType">
+              Preis für {{ price.priceType }}: {{ price.price }} €
+            </li>
           </ul>
-          <h4>Reviews</h4>
-          <div v-for="review in meal.mealReviews" :key="review.ID">
-            <p>Average Rating: {{ review.averageRating }}</p>
-            <p>{{ review.comment }}</p>
+          <button @click="toggleDetails(meal)" class="btn-show-details">Über das Gericht mehr erfahren</button>
+
+          <!-- Detailed information -->
+          <div v-if="meal.showDetails" class="detailed-info">
+            <ul>
+              <li v-for="additive in meal.additives" :key="additive.ID">{{ additive.text }}</li>
+            </ul>
+            <ul>
+              <li v-for="badge in meal.badges" :key="badge.ID">{{ badge.name }}: {{ badge.description }}</li>
+            </ul>
+            <p>Water Balance: {{ meal.waterBilanz }} L</p>
+            <p>CO2 Balance: {{ meal.co2Bilanz }} kg</p>
+
+            <!-- Reviews section -->
+            <h4 v-if="meal.mealReviews.length > 0">Reviews</h4>
+            <div v-if="meal.mealReviews.length > 0">
+              <div v-for="review in meal.mealReviews" :key="review.ID">
+                <p>Average Rating: {{ review.averageRating }}</p>
+                <ul>
+                  <li v-for="rating in review.detailRatings" :key="rating.name">{{ rating.name }}: {{ rating.rating }}</li>
+                </ul>
+                <p>{{ review.comment }}</p>
+              </div>
+            </div>
+            <p v-else>No reviews available</p>
           </div>
         </div>
       </li>
@@ -33,7 +55,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { fetchMeal } from '../types/GerichteService';
-import type { Meal, Price, Additive } from '../types/GerichteInterface';
+import type { Meal } from '../types/GerichteInterface';
 
 const meals = ref<Meal[]>([]);
 const loading = ref(true);
@@ -42,7 +64,11 @@ const apiKey = 'EjGTzhCqu7TbBUwpN2x4H7YIRf5LIepS28Uc+Pn2k8IBkc05wDI6F+ZQbA13f67q
 const fetchMealsList = async () => {
   try {
     const data = await fetchMeal(apiKey);
-    meals.value = data;
+    console.log('Fetched meals:', data);
+    meals.value = data.map(meal => ({
+      ...meal,
+      showDetails: false  // Initialize showDetails flag for each meal
+    }));
     loading.value = false;
   } catch (error) {
     console.error('Error fetching meals:', error);
@@ -50,18 +76,24 @@ const fetchMealsList = async () => {
   }
 };
 
-onMounted(() => {
-  fetchMealsList();
-});
-
-// Helper function to format price
-const formatPrice = (prices: Price[]): string => {
-  if (prices.length === 0) {
-    return 'Price not available';
-  }
-  const price = prices[0]; // Assuming there is only one price per meal
-  return `${price.price.toFixed(2)} € (${price.priceType})`;
+const toggleDetails = (meal: Meal) => {
+  meal.showDetails = !meal.showDetails;
 };
+
+onMounted(() => {
+  const intersectionObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      fetchMealsList();
+      intersectionObserver.disconnect();
+    }
+  });
+  const target = document.querySelector('.GerichtList');
+  if (target) {
+    intersectionObserver.observe(target);
+  } else {
+    console.warn('IntersectionObserver target not found');
+  }
+});
 </script>
 
 <style scoped>
@@ -92,6 +124,17 @@ const formatPrice = (prices: Price[]): string => {
 
 .meal-details {
   text-align: left;
+}
+
+.btn-show-details {
+  cursor: pointer;
+  color: blue;
+}
+
+.detailed-info {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
 }
 
 @media (max-width: 600px) {

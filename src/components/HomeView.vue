@@ -1,27 +1,31 @@
-
 <template>
   <div class="home-view">
     <header class="header">
-      <h1>Willkommen zur Mensa Marvel App</h1>
-      <p>Entdecke das Tagesmenü, spezielle Angebote und mehr!</p>
+      <h1>{{ t('welcome') }}</h1>
+      <p>{{ t('discover') }}</p>
     </header>
     <footer class="footer">
       <nav>
         <ul>
+          <li><button @click="changeLocale('en')">English</button></li>
+          <li><button @click="changeLocale('de')">Deutsch</button></li>
         </ul>
       </nav>
     </footer>
   </div>
 </template>
 
-
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 
+const { t, locale } = useI18n();
 
+const changeLocale = (lang: 'en' | 'de') => {
+  locale.value = lang;
+};
 </script>
 
 <style scoped>
-
 .home-view {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -33,36 +37,6 @@
 .header {
   text-align: center;
   margin-bottom: 2rem;
-}
-
-.main {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
-.section {
-  margin-bottom: 2rem;
-}
-
-.card {
-  background-color: #363636;
-  padding: 1rem;
-  border-radius: 8px;
-}
-
-.card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.card ul {
-  list-style: none;
-  padding: 0;
-}
-
-.card li {
-  margin-bottom: 1rem;
 }
 
 .footer {
@@ -80,13 +54,15 @@
   margin-right: 1rem;
 }
 
-.footer nav ul li a {
+.footer nav ul li button {
+  background: none;
+  border: none;
   color: #646cff;
+  cursor: pointer;
   text-decoration: none;
 }
 
-.footer nav ul li a:hover {
+.footer nav ul li button:hover {
   color: #535bf2;
 }
-
 </style>

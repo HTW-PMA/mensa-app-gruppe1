@@ -41,4 +41,6 @@ export interface Meal {
   waterBilanz: number;
   co2Bilanz: number;
   mealReviews: MealReview[];
+
+  showDetails?: boolean;
 }
