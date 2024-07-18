@@ -27,7 +27,7 @@
           <p v-if="mensa.contactInfo.email">{{ t('email') }}: {{ mensa.contactInfo.email }}</p>
           <ul>
             <li v-for="day in mensa.businessDays" :key="day.day">
-              <strong>{{ t(`days.${day.day}`) }}</strong>:
+              <strong>{{ t(`${day.day}`) }}</strong>:
               <ul>
                 <li v-if="day.businessHours.length > 0" v-for="hour in day.businessHours" :key="`${hour.openAt}-${hour.closeAt}`">
                   {{ hour.openAt }} - {{ hour.closeAt }} ({{ t(`hourTypes.${hour.businessHourType}`) }})
