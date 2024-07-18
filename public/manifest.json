@@ -4,7 +4,7 @@
   "theme_color": "#F7f7f7",
   "background_color": "#F7f7f7",
   "start_url": "/mensen",
-  "display": "fullscreen",
+  "display": "standalone",
   "icons": [
     {
       "src": "/img/safari-pinned-tab.svg",

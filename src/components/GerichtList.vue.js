@@ -1,22 +1,35 @@
 /* __placeholder__ */
 import { ref, onMounted, computed } from 'vue';
 import { fetchMeal } from '../types/GerichteService';
+import localforage from 'localforage';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 const meals = ref([]);
 const loading = ref(true);
 const apiKey = 'EjGTzhCqu7TbBUwpN2x4H7YIRf5LIepS28Uc+Pn2k8IBkc05wDI6F+ZQbA13f67qSlENe8AU3UqL5Zzck+rERaYxrXKqISZQ6ut9/KIgGJoHs1VMlNvp0DfvWa69WzXyvdEEtTUN/3tsfxeGDG//UmzHTps9DnYKemomcgwGEPx+4U/dbv4L/QeHoTph8dLISK9ipWP2By5SjFKPreZoAJWuOy/6+u5uF23irGt5wBVZCFsdrvJUiIN72QURoF6aR9dzT+a8g1i9w9cFnTFxTtewRtm4lFY2ME/nmMIHKkchUuqfT0bNsxZL2dPfIo1E3ahzuNctbqUfdBBv1lslYw==';
+const CACHE_KEY = 'mealData';
+const CACHE_TIMESTAMP_KEY = 'mealDataTimestamp';
+const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 Stunden
 const fetchMealsList = async () => {
     try {
-        const data = await fetchMeal(apiKey);
-        console.log('Fetched meals:', data);
-        meals.value = data.map(meal => ({
-            ...meal,
-            showDetails: false // Initialize showDetails flag for each meal
-        }));
+        const cachedData = await localforage.getItem(CACHE_KEY);
+        const cachedTimestamp = await localforage.getItem(CACHE_TIMESTAMP_KEY);
+        const now = Date.now();
+        if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
+            meals.value = cachedData;
+        }
+        else {
+            const data = await fetchMeal(apiKey);
+            meals.value = data.map(meal => ({
+                ...meal,
+                showDetails: false // Initialize showDetails flag for each meal
+            }));
+            await localforage.setItem(CACHE_KEY, data);
+            await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
+        }
         loading.value = false;
     }
     catch (error) {
-        console.error('Error fetching meals:', error);
+        console.error('Error fetching or saving meals:', error);
         loading.value = false;
     }
 };
@@ -46,7 +59,7 @@ const filteredMeals = computed(() => {
     return filteredList;
 });
 const applyFilters = () => {
-    // Nothing to do here, since computed property `filteredMeals` handles the filtering and sorting
+    // Nothing to do here, since computed property filteredMeals handles the filtering and sorting
 };
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;

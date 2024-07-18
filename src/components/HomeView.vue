@@ -30,7 +30,7 @@ const changeLocale = (lang: 'en' | 'de') => {
 .home-view {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  color: #5D4037; /* Dunkelbraun */
+  color: #F8E8E1; /* Dunkelbraun */
   background-color: #F8E8E1; /* Helles Beige */
   padding: 2rem;
 }
@@ -64,6 +64,6 @@ const changeLocale = (lang: 'en' | 'de') => {
 }
 
 .footer nav ul li button:hover {
-  color: #795548; /* Dunklerer Braunton für Hover */
+  color: #F8E8E1; /* Helles Beige für Hover */
 }
 </style>

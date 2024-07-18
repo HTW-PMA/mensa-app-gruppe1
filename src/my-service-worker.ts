@@ -33,6 +33,18 @@ self.addEventListener('fetch', (event: FetchEvent) => {
   // Weitere Schritte im Aktivierungslebenszyklus ausführen
 });
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered:', registration);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+  });
+}
+
 // Dies ist notwendig, da der neue Service Worker im skipWaiting-Zustand bleiben wird
 self.skipWaiting();
 clientsClaim();

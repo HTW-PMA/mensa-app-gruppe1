@@ -60,4 +60,29 @@ footer {
   padding: 1rem;
   background-color: #D7CCC8; /* Hellbraun für den Footer */
 }
+
+/* Media Queries für Responsive Design */
+@media (max-width: 600px) {
+  /* Styles für kleine Bildschirme */
+  .header nav {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header nav a {
+    margin: 0.5rem 0;
+  }
+}
+
+@media (min-width: 601px) {
+  /* Styles für größere Bildschirme */
+  .header nav {
+    flex-direction: row;
+  }
+
+  .header nav a {
+    margin: 0 1rem;
+  }
+}
+
 </style>

@@ -13,12 +13,12 @@
 
 a {
     font-weight: 500;
-    color: #ffeb3b; /* Gelbe Farbe */
+    color: #5D4037;
     text-decoration: inherit;
 }
 
 a:hover {
-    color: #fdd835; /* Dunklerer Gelbton beim Hover */
+    color: #5D4037;
 }
 
 body {
@@ -41,13 +41,13 @@ button {
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
-    background-color: #fbc02d; /* Gelber Hintergrund für Buttons */
+    background-color: #5D4037;
     cursor: pointer;
     transition: border-color 0.25s;
 }
 
 button:hover {
-    border-color: #ffeb3b; /* Hellerer Gelbton für den Rahmen beim Hover */
+    border-color: #5D4037;
 }
 
 button:focus,
@@ -72,12 +72,35 @@ button:focus-visible {
         background-color: #ffffff; /* Weißer Hintergrund im hellen Modus */
     }
     a {
-        color: #ffd54f; /* Gelbe Schriftfarbe für Links im hellen Modus */
+        color: #5D4037; /* Gelbe Schriftfarbe für Links im hellen Modus */
     }
     a:hover {
-        color: #fbc02d; /* Dunklerer Gelbton beim Hover im hellen Modus */
+        color: #5D4037; /* Dunklerer Gelbton beim Hover im hellen Modus */
     }
     button {
         background-color: #f9f9f9; /* Hellerer Grauton für Buttons im hellen Modus */
     }
+
+    .fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background-color: rgba(0, 0, 0, 0.5); /* Halbtransparenter Overlay-Hintergrund */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Beispiel: Vollbild-Element innerhalb der .fullscreen Klasse */
+    .fullscreen .content {
+        max-width: 90%;
+        background-color: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+
 }
