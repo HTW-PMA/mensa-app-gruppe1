@@ -63,7 +63,7 @@ function __VLS_template() {
     // CSS variable injection end 
     let __VLS_resolvedLocalAndGlobalComponents;
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("GerichtList") }, });
-    __VLS_elementAsFunction(__VLS_intrinsicElements.img)({ src: ("@/assets/Mensa%20Marvel%20(2).jpg"), alt: ("Mensa Marvel"), ...{ class: ("mensa-logo") }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.img)({ src: ("@/assets/Mensa%20Marvel%20(4).png"), alt: ("Mensa Marvel"), ...{ class: ("mensa-logo") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.h1, __VLS_intrinsicElements.h1)({});
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("filters") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.input)({ ...{ onInput: (__VLS_ctx.applyFilters) }, placeholder: ("Nach Gericht suchen"), });

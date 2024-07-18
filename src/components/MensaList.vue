@@ -1,5 +1,6 @@
 <template>
   <div class="mensa-list-container">
+    <img src="@/assets/Mensa%20Marvel%20(4).png" alt="Mensa Marvel" class="mensa-logo" />
     <div class="header">
       <h1>{{ t('mensaList.title') }}</h1>
       <div class="language-switch">

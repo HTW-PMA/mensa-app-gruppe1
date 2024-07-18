@@ -16,12 +16,16 @@ const messages = {
       filterName: 'Nach Name filtern',
       filterZipcode: 'Nach Postleitzahl filtern',
       filterDistrict: 'Nach Bezirk filtern',
-      filterOpenAt: 'Nach Öffnungszeit filtern'
+      filterOpenAt: 'Nach Öffnungszeit filtern',
+      filterMeal: 'Nach Gericht suchen',
+      sortByName: 'Nach Name sortieren',
+      sortByCategory: 'Nach Kategorie sortieren'
     },
     phone: 'Telefon',
     email: 'Email',
     closed: 'Geschlossen',
     noMensasFound: 'Keine Mensen gefunden. Bitte versuchen Sie es später noch einmal oder wenden Sie sich an den Support.',
+    noMealsFound: 'Keine Gerichte gefunden. Bitte versuchen Sie es später noch einmal oder wenden Sie sich an den Support.',
     loading: 'Laden...',
     days: {
       Monday: 'Montag',
@@ -35,6 +39,11 @@ const messages = {
     hourTypes: {
       lunch: 'Mittagessen',
       dinner: 'Abendessen'
+    },
+    reviews: {
+      averageRating: 'Durchschnittliche Bewertung',
+      noReviews: 'Keine Bewertungen verfügbar',
+      moreInfo: 'Über das Gericht mehr erfahren'
     }
   },
   en: {
@@ -52,12 +61,16 @@ const messages = {
       filterName: 'Filter by Name',
       filterZipcode: 'Filter by Zipcode',
       filterDistrict: 'Filter by District',
-      filterOpenAt: 'Filter by Opening Time'
+      filterOpenAt: 'Filter by Opening Time',
+      filterMeal: 'Search for a Meal',
+      sortByName: 'Sort by Name',
+      sortByCategory: 'Sort by Category'
     },
     phone: 'Phone',
     email: 'Email',
     closed: 'Closed',
     noMensasFound: 'No Mensas found. Please try again later or contact support.',
+    noMealsFound: 'No meals found. Please try again later or contact support.',
     loading: 'Loading...',
     days: {
       Monday: 'Monday',
@@ -71,6 +84,11 @@ const messages = {
     hourTypes: {
       lunch: 'Lunch',
       dinner: 'Dinner'
+    },
+    reviews: {
+      averageRating: 'Average Rating',
+      noReviews: 'No reviews available',
+      moreInfo: 'Learn more about the meal'
     }
   }
 };

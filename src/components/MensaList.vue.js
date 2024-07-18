@@ -77,6 +77,7 @@ function __VLS_template() {
     // CSS variable injection end 
     let __VLS_resolvedLocalAndGlobalComponents;
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("mensa-list-container") }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.img)({ src: ("@/assets/Mensa%20Marvel%20(4).png"), alt: ("Mensa Marvel"), ...{ class: ("mensa-logo") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("header") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.h1, __VLS_intrinsicElements.h1)({});
     (__VLS_ctx.t('mensaList.title'));
@@ -180,6 +181,7 @@ function __VLS_template() {
     }
     if (typeof __VLS_styleScopedClasses === 'object' && !Array.isArray(__VLS_styleScopedClasses)) {
         __VLS_styleScopedClasses['mensa-list-container'];
+        __VLS_styleScopedClasses['mensa-logo'];
         __VLS_styleScopedClasses['header'];
         __VLS_styleScopedClasses['language-switch'];
         __VLS_styleScopedClasses['filters'];
