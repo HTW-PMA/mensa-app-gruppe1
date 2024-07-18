@@ -124,6 +124,7 @@ onMounted(async () => {
 <style scoped>
 .mensa-list-container {
   padding: 20px;
+  background-color: #F8E8E1; /* Helles Beige */
 }
 
 .header {
@@ -134,6 +135,15 @@ onMounted(async () => {
 
 .language-switch button {
   margin: 0 5px;
+  background-color: #8D6E63; /* Brauntöne */
+  border: none;
+  color: #FFF; /* Weiß */
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.language-switch button:hover {
+  background-color: #795548; /* Dunklerer Braunton */
 }
 
 .filters input {
@@ -142,6 +152,7 @@ onMounted(async () => {
   padding: 5px;
   width: 100%;
   max-width: 300px;
+  border: 1px solid #D7CCC8; /* Hellbraun für die Rahmen */
 }
 
 .mensa-list {
@@ -151,11 +162,13 @@ onMounted(async () => {
 
 .mensa-item {
   margin-bottom: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #D7CCC8; /* Hellbraun für die Rahmen */
   padding: 10px;
+  background-color: #FFF; /* Weiß für die einzelnen Mensas */
 }
 
 .mensa-details {
   margin-top: 10px;
 }
 </style>
+

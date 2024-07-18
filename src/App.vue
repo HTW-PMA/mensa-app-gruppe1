@@ -25,9 +25,8 @@ import { RouterLink, RouterView } from 'vue-router';
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color-scheme: light dark;
-  color: #333;
-  background-color: #f8f9fa;
+  color: #5D4037; /* Dunkelbraun aus dem Logo */
+  background-color: #F8E8E1; /* Helles Beige für den Hintergrund */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -42,13 +41,13 @@ import { RouterLink, RouterView } from 'vue-router';
 }
 
 header {
-  background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+  background: linear-gradient(90deg, #8D6E63 0%, #795548 100%); /* Brauntöne für den Header */
   padding: 1rem;
 }
 
 nav a {
   margin: 0 1rem;
-  color: #fff;
+  color: #FFF; /* Weiß für die Links */
   text-decoration: none;
 }
 
@@ -59,6 +58,6 @@ nav a.router-link-exact-active {
 footer {
   margin-top: auto;
   padding: 1rem;
-  background-color: #f1f1f1;
+  background-color: #D7CCC8; /* Hellbraun für den Footer */
 }
 </style>

@@ -150,7 +150,7 @@ function __VLS_template() {
             for (const [day] of __VLS_getVForSourceType((mensa.businessDays))) {
                 __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({ key: ((day.day)), });
                 __VLS_elementAsFunction(__VLS_intrinsicElements.strong, __VLS_intrinsicElements.strong)({});
-                (__VLS_ctx.t(`days.${day.day}`));
+                (__VLS_ctx.t(`${day.day}`));
                 // @ts-ignore
                 [t,];
                 __VLS_elementAsFunction(__VLS_intrinsicElements.ul, __VLS_intrinsicElements.ul)({});

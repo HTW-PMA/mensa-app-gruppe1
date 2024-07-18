@@ -30,8 +30,8 @@ const changeLocale = (lang: 'en' | 'de') => {
 .home-view {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #5D4037; /* Dunkelbraun */
+  background-color: #F8E8E1; /* Helles Beige */
   padding: 2rem;
 }
 
@@ -58,12 +58,12 @@ const changeLocale = (lang: 'en' | 'de') => {
 .footer nav ul li button {
   background: none;
   border: none;
-  color: #646cff;
+  color: #8D6E63; /* Brauntöne für die Buttons */
   cursor: pointer;
   text-decoration: none;
 }
 
 .footer nav ul li button:hover {
-  color: #535bf2;
+  color: #795548; /* Dunklerer Braunton für Hover */
 }
 </style>

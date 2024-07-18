@@ -133,6 +133,7 @@ const applyFilters = () => {
   margin: 0 auto;
   padding: 20px;
   text-align: center;
+  background-color: #F8E8E1; /* Helles Beige */
 }
 
 .loading-spinner {
@@ -155,6 +156,9 @@ const applyFilters = () => {
   flex-direction: column;
   align-items: center;
   margin-bottom: 20px;
+  background-color: #FFF; /* Weiß für die einzelnen Gerichte */
+  border: 1px solid #D7CCC8; /* Hellbraun für die Rahmen */
+  padding: 10px;
 }
 
 .meal-details {
@@ -163,13 +167,13 @@ const applyFilters = () => {
 
 .btn-show-details {
   cursor: pointer;
-  color: blue;
+  color: #8D6E63; /* Brauntöne für die Buttons */
 }
 
 .detailed-info {
   margin-top: 10px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #D7CCC8; /* Hellbraun für die Rahmen */
 }
 
 @media (max-width: 600px) {
