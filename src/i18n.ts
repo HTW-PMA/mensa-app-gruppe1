@@ -4,6 +4,7 @@ const messages = {
   de: {
     welcome: 'Willkommen zur Mensa Marvel App',
     discover: 'Entdecke das Tagesmenü, spezielle Angebote und mehr!',
+    nearest: 'Nächste Mensa',
     home: 'Startseite',
     mensList: 'Mensa Liste',
     about: 'Über uns',
@@ -49,6 +50,7 @@ const messages = {
   en: {
     welcome: 'Welcome to the Mensa Marvel App',
     discover: 'Discover today\'s menu, special offers, and more!',
+    nearest: 'Nearest Mensa',
     home: 'Home',
     mensList: 'Mensa List',
     about: 'About Us',
