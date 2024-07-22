@@ -227,7 +227,7 @@ function __VLS_template() {
                         // @ts-ignore
                         [toggleFavoriteMensa,];
                     } }, });
-            (__VLS_ctx.isFavorite(mensa) ? __VLS_ctx.t('removeFromFavorites') : __VLS_ctx.t('addToFavorites'));
+            (__VLS_ctx.isFavorite(mensa) ? __VLS_ctx.t('Aus Lieblingsmensa entfernen') : __VLS_ctx.t('Als Lieblingsmensa Hinzufügen'));
             // @ts-ignore
             [t, t, isFavorite,];
         }

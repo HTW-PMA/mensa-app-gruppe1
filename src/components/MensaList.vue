@@ -39,7 +39,7 @@
           </ul>
 
           <button @click="toggleFavoriteMensa(mensa)">
-            {{ isFavorite(mensa) ? t('removeFromFavorites') : t('addToFavorites') }}
+            {{ isFavorite(mensa) ? t('Aus Lieblingsmensa entfernen') : t('Als Lieblingsmensa Hinzufügen') }}
           </button>
 
         </div>
