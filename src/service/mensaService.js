@@ -9,8 +9,7 @@ export async function fetchMensaById(apiKey, id) {
     if (!response.ok) {
         throw new Error('API-Anfrage fehlgeschlagen');
     }
-    const data = await response.json();
-    return data;
+    return await response.json();
 }
 export async function fetchMensas() {
     const response = await fetch(apiUrl, {
