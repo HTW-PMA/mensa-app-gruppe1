@@ -53,6 +53,9 @@
             </div>
             <p v-else>No reviews available</p>
           </div>
+          <button @click="toggleFavoriteDish(meal.name)">
+            {{ isFavorite(meal.name) ? 'Aus Lieblingsgerichten entfernen' : 'Als Lieblingsgericht auswählen' }}
+          </button>
         </div>
       </li>
     </ul>
@@ -70,15 +73,37 @@ import { fetchMeal } from '../types/GerichteService';
 import type { Meal } from '../types/GerichteInterface';
 import localforage from 'localforage';
 
+// Einstellungen für lokale Speicherung
+const FAVORITE_DISHES_KEY = 'favoriteDishes';
+
+// Initiale Daten
 const meals = ref<Meal[]>([]);
 const loading = ref(true);
-const apiKey = 'EjGTzhCqu7TbBUwpN2x4H7YIRf5LIepS28Uc+Pn2k8IBkc05wDI6F+ZQbA13f67qSlENe8AU3UqL5Zzck+rERaYxrXKqISZQ6ut9/KIgGJoHs1VMlNvp0DfvWa69WzXyvdEEtTUN/3tsfxeGDG//UmzHTps9DnYKemomcgwGEPx+4U/dbv4L/QeHoTph8dLISK9ipWP2By5SjFKPreZoAJWuOy/6+u5uF23irGt5wBVZCFsdrvJUiIN72QURoF6aR9dzT+a8g1i9w9cFnTFxTtewRtm4lFY2ME/nmMIHKkchUuqfT0bNsxZL2dPfIo1E3ahzuNctbqUfdBBv1lslYw==';
-
+const favoriteDishes = ref<string[]>([]);
+const apiKey = 'KJFzc/5w7I61UPPRrP8Is1Fq8ZTgvx93RIcuckfzqXqeEYIuwcJq7Ut1ZfasBnIppFJxkqCi7MOnME15cppwGbd9689hWV97bWPxmgTykB7pT1oCOWQlJFTVt/1nl1imKVNyRpPHGbR7ZYoTl7QAOQRtom/+iTt6+AcgaKLzBzrGqoxWbuRQEcLv98jhGE9Sibojc0Oj8n5GYn2xKfCcp/mJaFf23OSB3vPkcMPrEOPw+0TinGeu6LZZ4UFt8qeaKNi8jc+Tb9uEKeBUjOTM1co5RjyoKun2M5EWVTHYLRY8jZvF/VSJXLzHc6E3gp3dW7b3EPqE+/5RUZi5XFyWaQ==';
 const CACHE_KEY = 'mealData';
 const CACHE_TIMESTAMP_KEY = 'mealDataTimestamp';
-const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 Stunden
+const CACHE_EXPIRY_MS = 7 *24 * 60 * 60 * 1000; // 7 Tagen
 
-const fetchMealsList = async () => {
+// Lade die Favoriten aus localStorage
+const loadFavoriteDishes = () => {
+  const storedFavorites = localStorage.getItem(FAVORITE_DISHES_KEY);
+  if (storedFavorites) {
+    favoriteDishes.value = JSON.parse(storedFavorites);
+  } else {
+    favoriteDishes.value = [];
+  }
+};
+
+// Speichere die Favoriten in localStorage
+const saveFavoriteDishes = () => {
+  localStorage.setItem(FAVORITE_DISHES_KEY, JSON.stringify(favoriteDishes.value));
+};
+
+// Initialisiere die Favoriten und die Gerichtsliste
+const initializeData = async () => {
+  loadFavoriteDishes();
+
   try {
     const cachedData = await localforage.getItem<Meal[]>(CACHE_KEY);
     const cachedTimestamp = await localforage.getItem<number>(CACHE_TIMESTAMP_KEY);
@@ -102,12 +127,29 @@ const fetchMealsList = async () => {
   }
 };
 
+// Handle Details Toggle
 const toggleDetails = (meal: Meal) => {
   meal.showDetails = !meal.showDetails;
 };
 
+// Handle Favorite Toggle
+const toggleFavoriteDish = (mealName: string) => {
+  if (favoriteDishes.value.includes(mealName)) {
+    favoriteDishes.value = favoriteDishes.value.filter((dish: string) => dish !== mealName);
+  } else {
+    favoriteDishes.value.push(mealName);
+  }
+  saveFavoriteDishes();
+};
+
+// Check if a dish is a favorite
+const isFavorite = (mealName: string) => {
+  return favoriteDishes.value.includes(mealName);
+};
+
+// Load meals on component mount
 onMounted(() => {
-  fetchMealsList();
+  initializeData();
 });
 
 // Reactive search and sorting
@@ -136,9 +178,10 @@ const filteredMeals = computed(() => {
 });
 
 const applyFilters = () => {
-  // Nothing to do here, since computed property filteredMeals handles the filtering and sorting
+
 };
 </script>
+
 
 <style scoped>
 .GerichtList {

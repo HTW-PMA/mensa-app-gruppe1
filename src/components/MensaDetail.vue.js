@@ -45,8 +45,8 @@ function __VLS_template() {
         // @ts-ignore
         [mensa, mensa, mensa, mensa,];
         __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
-        (__VLS_ctx.mensa.address.geolocation.latitude);
-        (__VLS_ctx.mensa.address.geolocation.longitude);
+        (__VLS_ctx.mensa.address.geoLocation.latitude);
+        (__VLS_ctx.mensa.address.geoLocation.longitude);
         // @ts-ignore
         [mensa, mensa,];
         if (__VLS_ctx.mensa.contactInfo.phone) {

@@ -24,4 +24,8 @@ export async function fetchMensas() {
     const data = await response.json();
     return data;
 }
+export class fetchMenuForDate {
+}
+export class fetchMensasFromLocalforage {
+}
 //# sourceMappingURL=mensaService.js.map

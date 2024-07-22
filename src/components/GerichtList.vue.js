@@ -3,13 +3,33 @@ import { ref, onMounted, computed } from 'vue';
 import { fetchMeal } from '../types/GerichteService';
 import localforage from 'localforage';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
+// Einstellungen für lokale Speicherung
+const FAVORITE_DISHES_KEY = 'favoriteDishes';
+// Initiale Daten
 const meals = ref([]);
 const loading = ref(true);
-const apiKey = 'EjGTzhCqu7TbBUwpN2x4H7YIRf5LIepS28Uc+Pn2k8IBkc05wDI6F+ZQbA13f67qSlENe8AU3UqL5Zzck+rERaYxrXKqISZQ6ut9/KIgGJoHs1VMlNvp0DfvWa69WzXyvdEEtTUN/3tsfxeGDG//UmzHTps9DnYKemomcgwGEPx+4U/dbv4L/QeHoTph8dLISK9ipWP2By5SjFKPreZoAJWuOy/6+u5uF23irGt5wBVZCFsdrvJUiIN72QURoF6aR9dzT+a8g1i9w9cFnTFxTtewRtm4lFY2ME/nmMIHKkchUuqfT0bNsxZL2dPfIo1E3ahzuNctbqUfdBBv1lslYw==';
+const favoriteDishes = ref([]);
+const apiKey = 'KJFzc/5w7I61UPPRrP8Is1Fq8ZTgvx93RIcuckfzqXqeEYIuwcJq7Ut1ZfasBnIppFJxkqCi7MOnME15cppwGbd9689hWV97bWPxmgTykB7pT1oCOWQlJFTVt/1nl1imKVNyRpPHGbR7ZYoTl7QAOQRtom/+iTt6+AcgaKLzBzrGqoxWbuRQEcLv98jhGE9Sibojc0Oj8n5GYn2xKfCcp/mJaFf23OSB3vPkcMPrEOPw+0TinGeu6LZZ4UFt8qeaKNi8jc+Tb9uEKeBUjOTM1co5RjyoKun2M5EWVTHYLRY8jZvF/VSJXLzHc6E3gp3dW7b3EPqE+/5RUZi5XFyWaQ==';
 const CACHE_KEY = 'mealData';
 const CACHE_TIMESTAMP_KEY = 'mealDataTimestamp';
-const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 Stunden
-const fetchMealsList = async () => {
+const CACHE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 Tagen
+// Lade die Favoriten aus localStorage
+const loadFavoriteDishes = () => {
+    const storedFavorites = localStorage.getItem(FAVORITE_DISHES_KEY);
+    if (storedFavorites) {
+        favoriteDishes.value = JSON.parse(storedFavorites);
+    }
+    else {
+        favoriteDishes.value = [];
+    }
+};
+// Speichere die Favoriten in localStorage
+const saveFavoriteDishes = () => {
+    localStorage.setItem(FAVORITE_DISHES_KEY, JSON.stringify(favoriteDishes.value));
+};
+// Initialisiere die Favoriten und die Gerichtsliste
+const initializeData = async () => {
+    loadFavoriteDishes();
     try {
         const cachedData = await localforage.getItem(CACHE_KEY);
         const cachedTimestamp = await localforage.getItem(CACHE_TIMESTAMP_KEY);
@@ -33,11 +53,27 @@ const fetchMealsList = async () => {
         loading.value = false;
     }
 };
+// Handle Details Toggle
 const toggleDetails = (meal) => {
     meal.showDetails = !meal.showDetails;
 };
+// Handle Favorite Toggle
+const toggleFavoriteDish = (mealName) => {
+    if (favoriteDishes.value.includes(mealName)) {
+        favoriteDishes.value = favoriteDishes.value.filter((dish) => dish !== mealName);
+    }
+    else {
+        favoriteDishes.value.push(mealName);
+    }
+    saveFavoriteDishes();
+};
+// Check if a dish is a favorite
+const isFavorite = (mealName) => {
+    return favoriteDishes.value.includes(mealName);
+};
+// Load meals on component mount
 onMounted(() => {
-    fetchMealsList();
+    initializeData();
 });
 // Reactive search and sorting
 const searchQuery = ref('');
@@ -59,7 +95,6 @@ const filteredMeals = computed(() => {
     return filteredList;
 });
 const applyFilters = () => {
-    // Nothing to do here, since computed property filteredMeals handles the filtering and sorting
 };
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;
@@ -159,6 +194,18 @@ function __VLS_template() {
                     __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
                 }
             }
+            __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({ ...{ onClick: (...[$event]) => {
+                        if (!(!((__VLS_ctx.loading))))
+                            return;
+                        if (!((__VLS_ctx.filteredMeals.length > 0)))
+                            return;
+                        __VLS_ctx.toggleFavoriteDish(meal.name);
+                        // @ts-ignore
+                        [toggleFavoriteDish,];
+                    } }, });
+            (__VLS_ctx.isFavorite(meal.name) ? 'Aus Lieblingsgerichten entfernen' : 'Als Lieblingsgericht auswählen');
+            // @ts-ignore
+            [isFavorite,];
         }
     }
     else {
@@ -185,6 +232,8 @@ function __VLS_template() {
             return {
                 loading: loading,
                 toggleDetails: toggleDetails,
+                toggleFavoriteDish: toggleFavoriteDish,
+                isFavorite: isFavorite,
                 searchQuery: searchQuery,
                 sortOption: sortOption,
                 filteredMeals: filteredMeals,

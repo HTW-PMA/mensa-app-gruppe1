@@ -105,16 +105,33 @@ function __VLS_template() {
     const __VLS_29 = __VLS_pickFunctionalComponentCtx(__VLS_24, __VLS_26);
     // @ts-ignore
     const __VLS_30 = {}
+        .RouterLink;
+    ({}.RouterLink);
+    ({}.RouterLink);
+    __VLS_components.RouterLink;
+    __VLS_components.routerLink;
+    __VLS_components.RouterLink;
+    __VLS_components.routerLink;
+    // @ts-ignore
+    [RouterLink, RouterLink,];
+    // @ts-ignore
+    const __VLS_31 = __VLS_asFunctionalComponent(__VLS_30, new __VLS_30({ to: ("/settings"), }));
+    const __VLS_32 = __VLS_31({ to: ("/settings"), }, ...__VLS_functionalComponentArgsRest(__VLS_31));
+    ({}({ to: ("/settings"), }));
+    (__VLS_35.slots).default;
+    const __VLS_35 = __VLS_pickFunctionalComponentCtx(__VLS_30, __VLS_32);
+    // @ts-ignore
+    const __VLS_36 = {}
         .RouterView;
     ({}.RouterView);
     __VLS_components.RouterView;
     // @ts-ignore
     [RouterView,];
     // @ts-ignore
-    const __VLS_31 = __VLS_asFunctionalComponent(__VLS_30, new __VLS_30({}));
-    const __VLS_32 = __VLS_31({}, ...__VLS_functionalComponentArgsRest(__VLS_31));
+    const __VLS_37 = __VLS_asFunctionalComponent(__VLS_36, new __VLS_36({}));
+    const __VLS_38 = __VLS_37({}, ...__VLS_functionalComponentArgsRest(__VLS_37));
     ({}({}));
-    const __VLS_35 = __VLS_pickFunctionalComponentCtx(__VLS_30, __VLS_32);
+    const __VLS_41 = __VLS_pickFunctionalComponentCtx(__VLS_36, __VLS_38);
     __VLS_elementAsFunction(__VLS_intrinsicElements.footer, __VLS_intrinsicElements.footer)({});
     if (typeof __VLS_styleScopedClasses === 'object' && !Array.isArray(__VLS_styleScopedClasses)) {
     }

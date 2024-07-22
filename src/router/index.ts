@@ -4,6 +4,7 @@ import MensaList from '../components/MensaList.vue';
 import MensaDetailView from '../components/MensaDetail.vue';
 import GerichtList from '../components/GerichtList.vue';
 import AboutUs from '../components/AboutUs.vue';
+import UserSettings from '../components/UserSettings.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,11 @@ const router = createRouter({
       path: '/gericht-list',
       name: 'gericht-list',
       component: GerichtList
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: UserSettings
     }
   ]
 });

@@ -32,3 +32,9 @@ export async function fetchMensas(): Promise<Mensa[]> {
   const data: Mensa[] = await response.json();
   return data;
 }
+
+export class fetchMenuForDate {
+}
+
+export class fetchMensasFromLocalforage {
+}

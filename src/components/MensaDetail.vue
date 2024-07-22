@@ -3,7 +3,7 @@
     <h1>{{ mensa.name }}</h1>
     <img :src="mensa.url" :alt="`Mensa ${mensa.name} Image`" />
     <p>{{ mensa.address.street }}, {{ mensa.address.city }}, {{ mensa.address.zipcode }}, {{ mensa.address.district }}</p>
-    <p>Latitude: {{ mensa.address.geoLocation.latitude }}, Longitude: {{ mensa.address.geolocation.longitude }}</p>
+    <p>Latitude: {{ mensa.address.geoLocation.latitude }}, Longitude: {{ mensa.address.geoLocation.longitude }}</p>
     <p v-if="mensa.contactInfo.phone">Phone: {{ mensa.contactInfo.phone }}</p>
     <p v-if="mensa.contactInfo.email">Email: {{ mensa.contactInfo.email }}</p>
     <ul>

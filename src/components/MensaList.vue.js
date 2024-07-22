@@ -1,9 +1,10 @@
 /* __placeholder__ */
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { fetchMensas } from '../types/mensaService';
 import localforage from 'localforage';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
+const FAVORITE_MENSA_KEY = 'favoriteMensas';
+const favoriteMensas = ref([]);
 const { t, locale } = useI18n();
 const mensas = ref([]);
 const loading = ref(true);
@@ -19,28 +20,49 @@ const applyFilters = () => {
         loading.value = false;
     });
 };
+// Lade die Favoriten aus localStorage
+const loadFavoriteMensas = () => {
+    const storedFavorites = localStorage.getItem(FAVORITE_MENSA_KEY);
+    if (storedFavorites) {
+        favoriteMensas.value = JSON.parse(storedFavorites);
+    }
+    else {
+        favoriteMensas.value = [];
+    }
+};
+// Speichere die Favoriten in localStorage
+const saveFavoriteMensas = () => {
+    localStorage.setItem(FAVORITE_MENSA_KEY, JSON.stringify(favoriteMensas.value));
+};
 const CACHE_KEY = 'mensaData';
 const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
-const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 Stunden
+const CACHE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7Tage
 const fetchMensasList = async () => {
+    loadFavoriteMensas();
     try {
         const cachedData = await localforage.getItem(CACHE_KEY);
         const cachedTimestamp = await localforage.getItem(CACHE_TIMESTAMP_KEY);
         const now = Date.now();
+        console.log('Cached data:', cachedData);
+        console.log('Cached timestamp:', cachedTimestamp);
+        console.log('Current time:', now);
         if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
             mensas.value = cachedData;
         }
         else {
-            const data = await fetchMensas();
-            mensas.value = data;
-            await localforage.setItem(CACHE_KEY, data);
             await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
         }
         loading.value = false;
     }
-    catch (error) {
-        console.error('Error fetching or saving mensas:', error);
-        loading.value = false;
+    catch (apiError) {
+        console.error('Error fetching from API, trying to fetch from localforage cache:', apiError);
+        try {
+            loading.value = false;
+        }
+        catch (localforageError) {
+            console.error('Error fetching from localforage:', localforageError);
+            loading.value = false;
+        }
     }
 };
 const filteredMensas = computed(() => {
@@ -57,6 +79,19 @@ const getImgUrl = (file) => {
 };
 const changeLanguage = (lang) => {
     locale.value = lang;
+};
+const toggleFavoriteMensa = (mensa) => {
+    const index = favoriteMensas.value.findIndex(fav => fav.id === mensa.id);
+    if (index !== -1) {
+        favoriteMensas.value.splice(index, 1);
+    }
+    else {
+        favoriteMensas.value.push(mensa);
+    }
+    saveFavoriteMensas();
+};
+const isFavorite = (mensa) => {
+    return favoriteMensas.value.some(fav => fav.id === mensa.id);
 };
 onMounted(async () => {
     try {
@@ -183,6 +218,18 @@ function __VLS_template() {
                     [t,];
                 }
             }
+            __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({ ...{ onClick: (...[$event]) => {
+                        if (!(!((__VLS_ctx.loading))))
+                            return;
+                        if (!((__VLS_ctx.filteredMensas.length > 0)))
+                            return;
+                        __VLS_ctx.toggleFavoriteMensa(mensa);
+                        // @ts-ignore
+                        [toggleFavoriteMensa,];
+                    } }, });
+            (__VLS_ctx.isFavorite(mensa) ? __VLS_ctx.t('removeFromFavorites') : __VLS_ctx.t('addToFavorites'));
+            // @ts-ignore
+            [t, t, isFavorite,];
         }
     }
     else {
@@ -218,6 +265,8 @@ function __VLS_template() {
                 filteredMensas: filteredMensas,
                 getImgUrl: getImgUrl,
                 changeLanguage: changeLanguage,
+                toggleFavoriteMensa: toggleFavoriteMensa,
+                isFavorite: isFavorite,
             };
         },
     });
