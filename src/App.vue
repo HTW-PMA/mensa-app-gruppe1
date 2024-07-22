@@ -78,6 +78,7 @@ header {
   background: white;
   margin-left: -1rem;
   border-top: solid 1px rgba(93, 64, 55, 0.3);
+  z-index: 3;
 
   a {
     display: flex;

@@ -3,50 +3,70 @@
     <div class="heading-container">
       <h1>{{ t('welcome') }}</h1>
       <h3>{{ t('discover') }}</h3>
-      <a v-if="nearestMensa" class="next-meal-container">
-        <h2>{{ t('nearest') }}</h2>
-        <p>{{ nearestMensa.name }}</p>
+      <RouterLink :to="`/mensa/${nearestMensa.id}`" v-if="nearestMensa" class="next-meal-container">
+        <div class="next-meal-content">
+          <p>{{ t('nearest') }}:</p>
+          <h3>{{ nearestMensa.name }} ({{ distanceToNearestMensa?.toFixed(2) }} km)</h3>
+          <div>
+            <LocationIcon/>
+            {{ nearestMensa.address.street }}, {{ nearestMensa.address.city }}
+          </div>
+        </div>
+        <ChevronRightIcon/>
+      </RouterLink>
+    </div>
+    <img src="@/assets/home_vector.svg" alt="Mensa Marvel" class="mensa-logo"/>
+  </div>
+
+  <div v-if="width < SMALL_BREAKPOINT" class="home-view">
+    <RouterLink  :to="`/mensa/${nearestMensa.id}`" v-if="nearestMensa" class="next-meal-container">
+      <div class="next-meal-content">
+        <p>{{ t('nearest') }}:</p>
+        <h3>{{ nearestMensa.name }} ({{ distanceToNearestMensa?.toFixed(2) }} km)</h3>
         <div>
           <LocationIcon/>
           {{ nearestMensa.address.street }}, {{ nearestMensa.address.city }}
         </div>
-      </a>
-    </div>
-    <img src="@/assets/home_vector.svg" alt="Mensa Marvel" class="mensa-logo"/>
-
-  </div>
-
-  <div v-if="width < SMALL_BREAKPOINT" class="home-view">
-    <div class="next-meal-container">
-
-    </div>
+      </div>
+      <ChevronRightIcon/>
+    </RouterLink>
 
     <div class="header-container">
       Mensen
-      <router-link to="/">alle anzeigen</router-link>
+      <router-link to="/mensa-list">alle anzeigen</router-link>
     </div>
 
-    <div class="next-meal-container">
+    <div v-for="mensa in firstThreeMensas" :key="mensa.id" class="mensen-container">
+      <div class="content-wrapper">
+        <h3>{{ mensa.name }}</h3>
+        <div class="address-info">
+          <LocationIcon/>
+          <p>{{ mensa.address.street }}, {{ mensa.address.city }}</p>
+        </div>
+      </div>
 
+      <ChevronRightIcon/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import {useI18n} from 'vue-i18n';
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import {Mensa} from '@/types/mensainterface';
 import localforage from "localforage";
 import {fetchMensas} from "@/service/mensaService";
 import {SMALL_BREAKPOINT, windowService} from "@/service/windowService";
 import LocationIcon from "@/assets/icons/LocationIcon.vue";
+import ChevronRightIcon from "@/assets/icons/ChevronRightIcon.vue";
 
 const {t, locale} = useI18n();
 const location = ref<string | null>(null);
 const nearestMensa = ref<Mensa | null>(null);
 const mensas = ref<Mensa[]>([]);
+const distanceToNearestMensa = ref<number | null>(null);
 const loading = ref<boolean>(true);
-const {width} = windowService()
+const {width} = windowService();
 
 const CACHE_KEY = 'mensaData';
 const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
@@ -72,6 +92,7 @@ const fetchMensasList = async () => {
     loading.value = false;
   }
 };
+
 const getLocation = () => {
   return new Promise<{ latitude: number; longitude: number }>((resolve, reject) => {
     if (navigator.geolocation) {
@@ -108,7 +129,7 @@ const findNearestMensa = (userLat: number, userLng: number) => {
       }
     }
   });
-
+  distanceToNearestMensa.value = minDistance;
   nearestMensa.value = closestMensa;
   console.log('Nearest Mensa:', closestMensa);
 };
@@ -142,12 +163,15 @@ onMounted(async () => {
   }
 });
 
-
+const firstThreeMensas = computed(() => {
+  return mensas.value.slice(0, 4);
+});
 </script>
 
 <style scoped>
 .home-view {
   display: flex;
+  margin-bottom: 1rem;
 
   .heading-container {
     display: flex;
@@ -171,21 +195,70 @@ onMounted(async () => {
   }
 }
 
+.mensen-container {
+  margin-top: 1rem;
+  width: 100%;
+  height: fit-content;
+  padding: 1rem;
+  border: solid 1px rgb(91, 54, 46, 0.21);
+  border-radius: 12px;
+  box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+
+    h3,p {
+      margin: 0;
+    }
+
+    .address-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+  }
+
+}
+
 .next-meal-container {
+  text-decoration: none;
+  color: black;
   margin-top: 2rem;
   width: fit-content;
   height: fit-content;
   padding: 1rem;
   border: solid 1px rgb(91, 54, 46, 0.21);
   border-radius: 12px;
-  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.03), 0 15px 30px 0 rgba(255, 255, 255, 0.03),
-  0 40px 40px 0 rgba(255, 255, 255, 0.03), 0 80px 60px 0 rgba(255, 255, 255, 0.01),
-  0 130px 85px 0 rgba(255, 255, 255, 0);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1),
+  0 15px 30px rgba(0, 0, 0, 0.1),
+  0 40px 40px rgba(0, 0, 0, 0.1),
+  0 80px 60px rgba(0, 0, 0, 0.05),
+  0 130px 85px rgba(0, 0, 0, 0.02);
 
-  div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+  .next-meal-content {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 5px;
+
+    p, h3 {
+      margin: 0;
+    }
+
+    div {
+      gap: 5px;
+      display: flex;
+    }
   }
 }
 
@@ -194,8 +267,11 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     padding: 0 2rem;
+    align-items: center;
+    margin-bottom: 100px;
 
     .header-container {
+      width: 100%;
       display: flex;
       justify-content: space-between;
       margin-top: 2rem;
@@ -203,32 +279,28 @@ onMounted(async () => {
     }
 
     .next-meal-container {
+      margin-top: 1rem;
       width: 100%;
-      height: 80px;
-      padding: 0;
+      height: fit-content;
+      box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.2);
     }
   }
 }
 
 @media screen and (min-width: 690px) and (max-width: 1024px) {
   .home-view {
-    text-align: center;
     flex-wrap: wrap;
+    text-align: center;
 
     .heading-container {
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-top: 2rem;
     }
 
-  }
-}
-
-@media (min-width: 1025px) {
-  .home-view {
-
-    .header-container {
-      width: 400px;
+    .next-meal-container {
+      text-align: start;
     }
   }
 }
@@ -240,6 +312,14 @@ onMounted(async () => {
 
     .header-container {
       align-items: center !important;
+    }
+  }
+}
+
+@media (max-width: 1250px) {
+  .home-view{
+    img {
+      width: 650px;
     }
   }
 }

@@ -5,50 +5,62 @@
     </div>
 
     <div class="filters-container">
-      <input v-model="filters.search" @input="applyFilters" :placeholder="t('Name, PLZ, Bezirk')" />
-      <input v-model="filters.openAt" @input="applyFilters" :placeholder="t('filters.filterOpenAt')" type="time" />
+      <input v-model="filters.search" @input="applyFilters" :placeholder="t('Name, PLZ, Bezirk')"/>
+      <input v-model="filters.openAt" @input="applyFilters" :placeholder="t('filters.filterOpenAt')" type="time"/>
     </div>
 
     <div v-if="loading" class="loading-spinner">{{ t('loading') }}</div>
 
     <div class="mensa-item-container">
-      <div v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">
+      <RouterLink :to="`/mensa/${mensa.id}`" v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">
         <div class="mensa-item-content">
-          <h2>{{mensa.name}}</h2>
+          <h2>{{ mensa.name }}</h2>
           <div class="mensa-content-container">
             <div class="mensa-content-item">
               <LocationIcon/>
-              {{mensa.address.street}}, <br>
-              {{mensa.address.zipcode}} {{ mensa.address.city}}
+              <div class="address-container">
+                <strong> Adresse</strong>
+                {{ mensa.address.street }}, <br>
+                {{ mensa.address.zipcode }} {{ mensa.address.city }}
+              </div>
             </div>
 
             <div class="mensa-content-item">
               <ClockIcon/>
-              {{mensa.address.street}}, <br>
-              {{mensa.address.zipcode}} {{ mensa.address.city}}
+              <div v-if="getCurrentDayHours(mensa)">
+                <strong> Heute:</strong>
+                <div v-for="hour in getCurrentDayHours(mensa)" :key="hour.openAt">
+                  {{ hour.businessHourType }}: {{ hour.openAt }} - {{ hour.closeAt }}
+                </div>
+              </div>
+              <div v-else>
+                {{ t('closed') }}
+              </div>
             </div>
 
             <div class="contact-info">
               <div>
                 <PhoneIcon/>
-                {{mensa.contactInfo.phone}}
+                {{ mensa.contactInfo.phone }}
               </div>
               <div>
                 <MailIcon/>
-                {{mensa.contactInfo.email}}
+                {{ mensa.contactInfo.email }}
               </div>
 
             </div>
 
             <div class="mensa-content-item">
               <RatingIcon/>
-              {{mensa.canteenReviews}}
+              {{ mensa.canteenReviews }}
             </div>
           </div>
         </div>
 
-        <a> <ChevronRightIcon/> </a>
-      </div>
+        <a>
+          <ChevronRightIcon/>
+        </a>
+      </RouterLink>
     </div>
 
 
@@ -73,7 +85,7 @@ import ChevronRightIcon from "@/assets/icons/ChevronRightIcon.vue";
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
 const favoriteMensas = ref<Mensa[]>([]);
 
-const { t, locale } = useI18n();
+const {t, locale} = useI18n();
 
 const mensas = ref<Mensa[]>([]);
 const loading = ref<boolean>(true);
@@ -106,7 +118,7 @@ const saveFavoriteMensas = () => {
 
 const CACHE_KEY = 'mensaData';
 const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
-const CACHE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7Tage
+const CACHE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 Tage
 
 const fetchMensasList = async () => {
   loadFavoriteMensas();
@@ -150,8 +162,16 @@ const filteredMensas = computed(() => {
   });
 });
 
-const getImgUrl = (file: File) => {
-  return URL.createObjectURL(file);
+const getCurrentDayName = () => {
+  const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  const currentDayIndex = new Date().getDay();
+  return days[currentDayIndex];
+};
+
+const getCurrentDayHours = (mensa: Mensa) => {
+  const currentDayName = getCurrentDayName();
+  const currentDay = mensa.businessDays.find(day => day.day === currentDayName);
+  return currentDay ? currentDay.businessHours : null;
 };
 
 const toggleFavoriteMensa = (mensa: Mensa) => {
@@ -174,6 +194,8 @@ onMounted(async () => {
     if (data) {
       mensas.value = data;
       loading.value = false;
+
+      console.log(data)
     } else {
       await fetchMensasList();
     }
@@ -183,6 +205,7 @@ onMounted(async () => {
   }
 });
 </script>
+
 
 <style scoped>
 .mensa-list-container {
@@ -200,7 +223,7 @@ onMounted(async () => {
       margin-bottom: 10px;
       padding: 5px;
       border-radius: 5px;
-      min-width: 250px;
+      min-width: 200px;
     }
   }
 
@@ -210,24 +233,33 @@ onMounted(async () => {
     gap: 1rem;
 
     .mensa-item {
+      text-decoration: none;
+      color: black;
       display: flex;
       border: 1px solid rgba(91, 54, 46, 0.21);
       border-radius: 12px;
       padding: 1rem;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 6px 12px -4px rgba(0, 0, 0, 0.2);
 
       .mensa-item-content {
         display: flex;
         flex-direction: column;
+
         .mensa-content-container {
           display: flex;
-          gap: 1rem;
+          gap: 1.5rem;
           flex-wrap: wrap;
 
           .mensa-content-item, .contact-info {
             display: flex;
             gap: 5px;
+
+            .address-container {
+              display: flex;
+              flex-direction: column;
+            }
           }
 
           .contact-info {
@@ -235,8 +267,8 @@ onMounted(async () => {
 
             div {
               display: flex;
-              justify-content: center;
               align-items: center;
+              gap: 5px;
             }
           }
         }
@@ -247,10 +279,14 @@ onMounted(async () => {
 }
 
 @media (max-width: 690px) {
-  .filters-container {
-    flex-direction: column;
-    width: 100%;
-    gap: 0 !important;
+  .mensa-list-container {
+    margin-bottom: 100px;
+
+    .filters-container {
+      flex-direction: column;
+      width: 100%;
+      gap: 0 !important;
+    }
   }
 }
 
