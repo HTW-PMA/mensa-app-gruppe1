@@ -4,35 +4,12 @@
       <h2>{{ t('mensaList.title') }}</h2>
     </div>
 
-    <div class="filters">
+    <div class="filters-container">
       <input v-model="filters.search" @input="applyFilters" :placeholder="t('Name, PLZ, Bezirk')" />
       <input v-model="filters.openAt" @input="applyFilters" :placeholder="t('filters.filterOpenAt')" type="time" />
     </div>
 
     <div v-if="loading" class="loading-spinner">{{ t('loading') }}</div>
-
-<!--    <ul v-else-if="filteredMensas.length > 0" class="mensa-list">-->
-<!--      <li v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">-->
-<!--        <img v-if="mensa.img" :src="getImgUrl(mensa.img)" :alt="`Mensa ${mensa.name} Image`" loading="lazy" class="mensa-image" />-->
-<!--        <div class="mensa-details">-->
-<!--          <h2>{{ mensa.name }}</h2>-->
-<!--          <p>{{ mensa.address.street }}, {{ mensa.address.city }}</p>-->
-<!--          <p v-if="mensa.contactInfo.phone">{{ t('phone') }}: {{ mensa.contactInfo.phone }}</p>-->
-<!--          <p v-if="mensa.contactInfo.email">{{ t('email') }}: {{ mensa.contactInfo.email }}</p>-->
-<!--          <ul>-->
-<!--            <li v-for="day in mensa.businessDays" :key="day.day">-->
-<!--              <strong>{{ t(`${day.day}`) }}</strong>:-->
-<!--              <ul>-->
-<!--                <li v-if="day.businessHours.length > 0" v-for="hour in day.businessHours" :key="`${hour.openAt}-${hour.closeAt}`">-->
-<!--                  {{ hour.openAt }} - {{ hour.closeAt }} ({{ t(`hourTypes.${hour.businessHourType}`) }})-->
-<!--                </li>-->
-<!--                <li v-else>{{ t('closed') }}</li>-->
-<!--              </ul>-->
-<!--            </li>-->
-<!--          </ul>-->
-<!--        </div>-->
-<!--      </li>-->
-<!--    </ul>-->
 
     <div class="mensa-item-container">
       <div v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">
@@ -210,11 +187,28 @@ onMounted(async () => {
 <style scoped>
 .mensa-list-container {
   padding: 0 2rem;
+  margin-bottom: 1rem;
+
+  .filters-container {
+    display: flex;
+    justify-content: end;
+    width: 100%;
+    gap: 1rem;
+
+    input {
+      display: block;
+      margin-bottom: 10px;
+      padding: 5px;
+      border-radius: 5px;
+      min-width: 250px;
+    }
+  }
 
   .mensa-item-container {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
     .mensa-item {
       display: flex;
       border: 1px solid rgba(91, 54, 46, 0.21);
@@ -252,17 +246,12 @@ onMounted(async () => {
 
 }
 
-.filters input {
-  display: block;
-  margin-bottom: 10px;
-  padding: 5px;
-  width: 100%;
-  max-width: 300px;
-  border-radius: 5px;
+@media (max-width: 690px) {
+  .filters-container {
+    flex-direction: column;
+    width: 100%;
+    gap: 0 !important;
+  }
 }
 
-.mensa-list {
-  list-style: none;
-  padding: 0;
-}
 </style>
