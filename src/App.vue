@@ -12,6 +12,7 @@ import { RouterLink, RouterView } from 'vue-router';
         <router-link to="/contact">Contact</router-link>
         <router-link to="/gericht-list">Meal</router-link>
         <router-link to="/settings">Settings</router-link>
+
       </nav>
     </header>
     <RouterView />

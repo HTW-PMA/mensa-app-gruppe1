@@ -7,7 +7,6 @@
       <ul>
         <li v-for="(mensa, index) in favoriteMensas" :key="index">
           {{ mensa.name }}
-
           <button @click="removeFavoriteMensa(index)">Entfernen</button>
         </li>
       </ul>
