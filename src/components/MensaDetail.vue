@@ -37,10 +37,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { Mensa } from '../types/mensainterface';
-import { fetchMensaById } from '../types/mensaService';
+import {onMounted, ref} from 'vue';
+import {useRoute} from 'vue-router';
+import {Mensa} from '../types/mensainterface';
+import {fetchMensaById} from '../service/mensaService';
 
 const route = useRoute();
 const mensa = ref<Mensa | null>(null);

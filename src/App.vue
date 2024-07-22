@@ -1,89 +1,108 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
+import {SMALL_BREAKPOINT, windowService} from "@/service/windowService";
+import HomeIcon from "@/assets/icons/HomeIcon.vue";
+import ListIcon from "@/assets/icons/ListIcon.vue";
+import UserIcon from "@/assets/icons/UserIcon.vue";
+
+const {width} = windowService()
+
 </script>
 
 <template>
   <div id="app">
     <header>
-      <nav>
+      <img src="/src/assets/logo.svg" alt="logo">
+      <nav class="desktop-nav" v-if="width > SMALL_BREAKPOINT">
         <router-link to="/">Home</router-link>
         <router-link to="/mensa-list">Mensa List</router-link>
         <router-link to="/about">About Us</router-link>
-        <router-link to="/contact">Contact</router-link>
-        <router-link to="/gericht-list">Meal</router-link>
-        <router-link to="/settings">Settings</router-link>
-
+        <router-link to="/settings"><UserIcon></UserIcon></router-link>
       </nav>
     </header>
+
+    <nav class="mobile-nav" v-if="width < SMALL_BREAKPOINT">
+      <router-link to="/"> <HomeIcon></HomeIcon> Home</router-link>
+      <router-link to="/mensa-list"> <ListIcon></ListIcon> List</router-link>
+      <router-link to="/settings"><UserIcon></UserIcon> Profile</router-link>
+
+    </nav>
     <RouterView />
-    <footer>
-      &copy; 2024 Mensa Marvel App
-    </footer>
   </div>
 </template>
 
 <style>
-#app {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #5D4037; /* Dunkelbraun aus dem Logo */
-  background-color: #F8E8E1; /* Helles Beige für den Hintergrund */
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+:root {
+  margin-left: 5rem;
+  margin-right: 5rem;
 }
 
 header {
-  background: linear-gradient(90deg, #8D6E63 0%, #795548 100%); /* Brauntöne für den Header */
+  display: flex;
+  justify-content: space-between;
   padding: 1rem;
-}
 
-nav a {
-  margin: 0 1rem;
-  color: #FFF; /* Weiß für die Links */
-  text-decoration: none;
-}
-
-nav a.router-link-exact-active {
-  font-weight: bold;
-}
-
-footer {
-  margin-top: auto;
-  padding: 1rem;
-  background-color: #D7CCC8; /* Hellbraun für den Footer */
-}
-
-/* Media Queries für Responsive Design */
-@media (max-width: 600px) {
-  /* Styles für kleine Bildschirme */
-  .header nav {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .header nav a {
-    margin: 0.5rem 0;
+  img {
+    width: 50px;
   }
 }
 
-@media (min-width: 601px) {
-  /* Styles für größere Bildschirme */
-  .header nav {
-    flex-direction: row;
-  }
+.desktop-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  .header nav a {
+  a {
     margin: 0 1rem;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 20px;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.desktop-nav a.router-link-exact-active {
+  font-weight: 900;
+}
+
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  padding: 1rem 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  margin-left: -1rem;
+  border-top: solid 1px rgba(93, 64, 55, 0.3);
+
+  a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+  }
+
+  a.router-link-exact-active {
+    font-weight: 900;
+  }
+}
+
+@media (max-width: 690px) {
+  :root {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 

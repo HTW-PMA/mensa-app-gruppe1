@@ -1,23 +1,29 @@
 <template>
-  <div class="home-view">
-    <header class="header">
+  <div v-if="width > SMALL_BREAKPOINT" class="home-view">
       <h1>{{ t('welcome') }}</h1>
       <p>{{ t('discover') }}</p>
-      <img src="@/assets/Mensa%20Marvel%20(4).png" alt="Mensa Marvel" class="mensa-logo" />
-      <div v-if="nearestMensa">
+      <a v-if="nearestMensa">
         <h2>{{ t('nearest') }}</h2>
         <p>{{ nearestMensa.name }}</p>
         <p>{{ nearestMensa.address.street }}, {{ nearestMensa.address.city }}</p>
-      </div>
-    </header>
-    <footer class="footer">
-      <nav>
-        <ul>
-          <li><button @click="changeLocale('en')">English</button></li>
-          <li><button @click="changeLocale('de')">Deutsch</button></li>
-        </ul>
-      </nav>
-    </footer>
+      </a>
+      <img src="@/assets/home_vector.svg" alt="Mensa Marvel" class="mensa-logo" />
+
+  </div>
+
+  <div v-if="width < SMALL_BREAKPOINT" class="home-view">
+   <div class="next-meal-container">
+
+   </div>
+
+    <div class="header-container">
+      Mensen
+      <router-link to="/">alle anzeigen</router-link>
+    </div>
+
+    <div class="next-meal-container">
+
+    </div>
   </div>
 </template>
 
@@ -26,13 +32,15 @@ import { useI18n } from 'vue-i18n';
 import { ref, onMounted } from 'vue';
 import { Mensa } from '@/types/mensainterface';
 import localforage from "localforage";
-import {fetchMensas} from "@/types/mensaService";
+import {fetchMensas} from "@/service/mensaService";
+import {SMALL_BREAKPOINT, windowService} from "@/service/windowService";
 
 const { t, locale } = useI18n();
 const location = ref<string | null>(null);
 const nearestMensa = ref<Mensa | null>(null);
 const mensas = ref<Mensa[]>([]);
 const loading = ref<boolean>(true);
+const {width} = windowService()
 
 const CACHE_KEY = 'mensaData';
 const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
@@ -131,49 +139,37 @@ onMounted(async () => {
   }
 });
 
-const changeLocale = (lang: 'en' | 'de') => {
-  locale.value = lang;
-};
+
 </script>
 
 <style scoped>
 .home-view {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  color: #F8E8E1; /* Dunkelbraun */
-  background-color: #F8E8E1; /* Helles Beige */
-  padding: 2rem;
+  display: flex;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
+.next-meal-container {
+  width: 100%;
+  height: 110px;
+  border: solid 1px rgb(91, 54, 46, 0.21);
+  border-radius: 12px;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.03), 0 15px 30px 0 rgba(255, 255, 255, 0.03),
+  0 40px 40px 0 rgba(255, 255, 255, 0.03), 0 80px 60px 0 rgba(255, 255, 255, 0.01),
+  0 130px 85px 0 rgba(255, 255, 255, 0);
 }
 
-.footer {
-  text-align: center;
-  margin-top: 2rem;
+@media (max-width: 690px) {
+  .home-view {
+    display: flex;
+    flex-direction: column;
+    padding: 0 2rem;
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      margin-bottom: .5rem;
+    }
+  }
 }
 
-.footer nav ul {
-  list-style: none;
-  padding: 0;
-}
-
-.footer nav ul li {
-  display: inline;
-  margin-right: 1rem;
-}
-
-.footer nav ul li button {
-  background: none;
-  border: none;
-  color: #8D6E63; /* Brauntöne für die Buttons */
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.footer nav ul li button:hover {
-  color: #F8E8E1; /* Helles Beige für Hover */
-}
 </style>

@@ -1,7 +1,8 @@
 /* __placeholder__ */
-import { ref, onMounted, computed } from 'vue';
-import { fetchMeal } from '../types/GerichteService';
+import {computed, onMounted, ref} from 'vue';
+import {fetchMeal} from '../service/GerichteService.js';
 import localforage from 'localforage';
+
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 // Einstellungen für lokale Speicherung
 const FAVORITE_DISHES_KEY = 'favoriteDishes';

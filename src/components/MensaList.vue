@@ -1,62 +1,98 @@
 <template>
   <div class="mensa-list-container">
-    <img src="@/assets/Mensa%20Marvel%20(4).png" alt="Mensa Marvel" class="mensa-logo" />
     <div class="header">
-      <h1>{{ t('mensaList.title') }}</h1>
-      <div class="language-switch">
-        <button @click="changeLanguage('en')">EN</button>
-        <button @click="changeLanguage('de')">DE</button>
-      </div>
+      <h2>{{ t('mensaList.title') }}</h2>
     </div>
 
     <div class="filters">
-      <input v-model="filters.name" @input="applyFilters" :placeholder="t('filters.filterName')" />
-      <input v-model="filters.zipcode" @input="applyFilters" :placeholder="t('filters.filterZipcode')" />
-      <input v-model="filters.district" @input="applyFilters" :placeholder="t('filters.filterDistrict')" />
+      <input v-model="filters.search" @input="applyFilters" :placeholder="t('Name, PLZ, Bezirk')" />
       <input v-model="filters.openAt" @input="applyFilters" :placeholder="t('filters.filterOpenAt')" type="time" />
     </div>
 
     <div v-if="loading" class="loading-spinner">{{ t('loading') }}</div>
 
-    <ul v-else-if="filteredMensas.length > 0" class="mensa-list">
-      <li v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">
-        <img v-if="mensa.img" :src="getImgUrl(mensa.img)" :alt="`Mensa ${mensa.name} Image`" loading="lazy" class="mensa-image" />
-        <div class="mensa-details">
-          <h2>{{ mensa.name }}</h2>
-          <p>{{ mensa.address.street }}, {{ mensa.address.city }}</p>
-          <p v-if="mensa.contactInfo.phone">{{ t('phone') }}: {{ mensa.contactInfo.phone }}</p>
-          <p v-if="mensa.contactInfo.email">{{ t('email') }}: {{ mensa.contactInfo.email }}</p>
-          <ul>
-            <li v-for="day in mensa.businessDays" :key="day.day">
-              <strong>{{ t(`${day.day}`) }}</strong>:
-              <ul>
-                <li v-if="day.businessHours.length > 0" v-for="hour in day.businessHours" :key="`${hour.openAt}-${hour.closeAt}`">
-                  {{ hour.openAt }} - {{ hour.closeAt }} ({{ t(`hourTypes.${hour.businessHourType}`) }})
-                </li>
-                <li v-else>{{ t('closed') }}</li>
-              </ul>
-            </li>
-          </ul>
+<!--    <ul v-else-if="filteredMensas.length > 0" class="mensa-list">-->
+<!--      <li v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">-->
+<!--        <img v-if="mensa.img" :src="getImgUrl(mensa.img)" :alt="`Mensa ${mensa.name} Image`" loading="lazy" class="mensa-image" />-->
+<!--        <div class="mensa-details">-->
+<!--          <h2>{{ mensa.name }}</h2>-->
+<!--          <p>{{ mensa.address.street }}, {{ mensa.address.city }}</p>-->
+<!--          <p v-if="mensa.contactInfo.phone">{{ t('phone') }}: {{ mensa.contactInfo.phone }}</p>-->
+<!--          <p v-if="mensa.contactInfo.email">{{ t('email') }}: {{ mensa.contactInfo.email }}</p>-->
+<!--          <ul>-->
+<!--            <li v-for="day in mensa.businessDays" :key="day.day">-->
+<!--              <strong>{{ t(`${day.day}`) }}</strong>:-->
+<!--              <ul>-->
+<!--                <li v-if="day.businessHours.length > 0" v-for="hour in day.businessHours" :key="`${hour.openAt}-${hour.closeAt}`">-->
+<!--                  {{ hour.openAt }} - {{ hour.closeAt }} ({{ t(`hourTypes.${hour.businessHourType}`) }})-->
+<!--                </li>-->
+<!--                <li v-else>{{ t('closed') }}</li>-->
+<!--              </ul>-->
+<!--            </li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </li>-->
+<!--    </ul>-->
 
-          <button @click="toggleFavoriteMensa(mensa)">
-            {{ isFavorite(mensa) ? t('Aus Lieblingsmensa entfernen') : t('Als Lieblingsmensa Hinzufügen') }}
-          </button>
+    <div class="mensa-item-container">
+      <div v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">
+        <div class="mensa-item-content">
+          <h2>{{mensa.name}}</h2>
+          <div class="mensa-content-container">
+            <div class="mensa-content-item">
+              <LocationIcon/>
+              {{mensa.address.street}}, <br>
+              {{mensa.address.zipcode}} {{ mensa.address.city}}
+            </div>
 
+            <div class="mensa-content-item">
+              <ClockIcon/>
+              {{mensa.address.street}}, <br>
+              {{mensa.address.zipcode}} {{ mensa.address.city}}
+            </div>
+
+            <div class="contact-info">
+              <div>
+                <PhoneIcon/>
+                {{mensa.contactInfo.phone}}
+              </div>
+              <div>
+                <MailIcon/>
+                {{mensa.contactInfo.email}}
+              </div>
+
+            </div>
+
+            <div class="mensa-content-item">
+              <RatingIcon/>
+              {{mensa.canteenReviews}}
+            </div>
+          </div>
         </div>
-      </li>
-    </ul>
 
-    <p v-else>
+        <a> <ChevronRightIcon/> </a>
+      </div>
+    </div>
+
+
+    <p v-if="mensas.length === 0">
       {{ t('noMensasFound') }}
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
+import {computed, onMounted, ref} from 'vue';
+import {useI18n} from 'vue-i18n';
 import localforage from 'localforage';
-import { Mensa } from '@/types/mensainterface';
+import {Mensa} from '@/types/mensainterface';
+import LocationIcon from "@/assets/icons/LocationIcon.vue";
+import ClockIcon from "@/assets/icons/ClockIcon.vue";
+import PhoneIcon from "@/assets/icons/PhoneIcon.vue";
+import MailIcon from "@/assets/icons/MailIcon.vue";
+import RatingIcon from "@/assets/icons/RatingIcon.vue";
+import ChevronRightIcon from "@/assets/icons/ChevronRightIcon.vue";
+
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
 const favoriteMensas = ref<Mensa[]>([]);
 
@@ -65,9 +101,7 @@ const { t, locale } = useI18n();
 const mensas = ref<Mensa[]>([]);
 const loading = ref<boolean>(true);
 const filters = ref({
-  name: '',
-  zipcode: '',
-  district: '',
+  search: '',
   openAt: '',
 });
 
@@ -126,24 +160,21 @@ const fetchMensasList = async () => {
 };
 
 const filteredMensas = computed(() => {
+  const searchLower = filters.value.search.toLowerCase();
   return mensas.value.filter((mensa) => {
-    const nameMatch = mensa.name.toLowerCase().includes(filters.value.name.toLowerCase());
-    const zipcodeMatch = mensa.address.zipcode.includes(filters.value.zipcode);
-    const districtMatch = mensa.address.district.toLowerCase().includes(filters.value.district.toLowerCase());
+    const nameMatch = mensa.name.toLowerCase().includes(searchLower);
+    const zipcodeMatch = mensa.address.zipcode.includes(searchLower);
+    const districtMatch = mensa.address.district.toLowerCase().includes(searchLower);
     const openAtMatch = filters.value.openAt ? mensa.businessDays.some((day) =>
         day.businessHours.some((hour) => hour.openAt <= filters.value.openAt && hour.closeAt >= filters.value.openAt)
     ) : true;
 
-    return nameMatch && zipcodeMatch && districtMatch && openAtMatch;
+    return (nameMatch || zipcodeMatch || districtMatch) && openAtMatch;
   });
 });
 
 const getImgUrl = (file: File) => {
   return URL.createObjectURL(file);
-};
-
-const changeLanguage = (lang: string) => {
-  locale.value = lang;
 };
 
 const toggleFavoriteMensa = (mensa: Mensa) => {
@@ -178,27 +209,47 @@ onMounted(async () => {
 
 <style scoped>
 .mensa-list-container {
-  padding: 20px;
-  background-color: #F8E8E1; /* Helles Beige */
-}
+  padding: 0 2rem;
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  .mensa-item-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    .mensa-item {
+      display: flex;
+      border: 1px solid rgba(91, 54, 46, 0.21);
+      border-radius: 12px;
+      padding: 1rem;
+      justify-content: space-between;
+      align-items: center;
 
-.language-switch button {
-  margin: 0 5px;
-  background-color: #8D6E63; /* Brauntöne */
-  border: none;
-  color: #FFF; /* Weiß */
-  padding: 5px 10px;
-  cursor: pointer;
-}
+      .mensa-item-content {
+        display: flex;
+        flex-direction: column;
+        .mensa-content-container {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
 
-.language-switch button:hover {
-  background-color: #795548; /* Dunklerer Braunton */
+          .mensa-content-item, .contact-info {
+            display: flex;
+            gap: 5px;
+          }
+
+          .contact-info {
+            flex-direction: column;
+
+            div {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+          }
+        }
+      }
+    }
+  }
+
 }
 
 .filters input {
@@ -207,46 +258,11 @@ onMounted(async () => {
   padding: 5px;
   width: 100%;
   max-width: 300px;
-  border: 1px solid #D7CCC8; /* Hellbraun für die Rahmen */
+  border-radius: 5px;
 }
 
 .mensa-list {
   list-style: none;
   padding: 0;
-}
-
-.mensa-item {
-  margin-bottom: 20px;
-  border: 1px solid #D7CCC8; /* Hellbraun für die Rahmen */
-  padding: 10px;
-  background-color: #FFF; /* Weiß für die einzelnen Mensas */
-}
-
-.mensa-details {
-  margin-top: 10px;
-}
-
-@media (max-width: 600px) {
-  /* Styles für Bildschirmbreiten bis 600px */
-  .header nav {
-    flex-direction: column; /* Navigation vertikal anzeigen */
-  }
-
-  .header nav a {
-    margin: 0.5rem 0; /* Kleinerer Abstand zwischen den Links */
-  }
-
-  /* Weitere Anpassungen für kleine Bildschirme hier */
-}
-
-@media (min-width: 601px) {
-  /* Styles für Bildschirmbreiten ab 601px */
-  .header nav {
-    flex-direction: row; /* Navigation horizontal anzeigen */
-  }
-
-  .header nav a {
-    margin: 0 1rem; /* Größerer Abstand zwischen den Links */
-  }
 }
 </style>
