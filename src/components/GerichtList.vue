@@ -69,7 +69,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { fetchMeal } from '../types/GerichteService';
+import { fetchMeal } from '../service/GerichteService';
 import type { Meal } from '../types/GerichteInterface';
 import localforage from 'localforage';
 

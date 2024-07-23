@@ -1,7 +1,7 @@
 /* __placeholder__ */
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { fetchMensaById } from '../types/mensaService';
+import { fetchMensaById } from '../service/mensaService';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 const route = useRoute();
 const mensa = ref(null);

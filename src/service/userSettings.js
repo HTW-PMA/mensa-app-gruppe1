@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue';
-import { setLocalStorageItem } from '../types/storageService';
+import { setLocalStorageItem } from './storageService';
 const FAVORITE_MENSA_KEY = 'favoriteMensa';
 const FAVORITE_DISHES_KEY = 'favoriteDishes';
 const NOTIFICATIONS_KEY = 'notificationsPreferences';

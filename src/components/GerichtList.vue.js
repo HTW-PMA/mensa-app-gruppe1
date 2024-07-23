@@ -1,6 +1,6 @@
 /* __placeholder__ */
 import { ref, onMounted, computed } from 'vue';
-import { fetchMeal } from '../types/GerichteService';
+import { fetchMeal } from '../service/GerichteService';
 import localforage from 'localforage';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 // Einstellungen für lokale Speicherung

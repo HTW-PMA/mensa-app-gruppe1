@@ -1,4 +1,4 @@
-import type { Meal } from '../types/GerichteInterface';
+import type {Meal} from '../types/GerichteInterface';
 
 const apiUrl = 'https://mensa.gregorflachs.de/api/v1/meal';
 
