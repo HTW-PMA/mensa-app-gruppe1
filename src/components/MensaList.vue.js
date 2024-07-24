@@ -23,6 +23,20 @@ const filters = ref({
     search: '',
     openAt: '',
 });
+const FAVORITE_MEALS_KEY = 'favoriteMeals';
+const favoriteMeals = ref([]);
+const loadFavoriteMeals = () => {
+    const storedMeals = localStorage.getItem(FAVORITE_MEALS_KEY);
+    if (storedMeals) {
+        favoriteMeals.value = JSON.parse(storedMeals);
+    }
+    else {
+        favoriteMeals.value = [];
+    }
+};
+const saveFavoriteMeals = () => {
+    localStorage.setItem(FAVORITE_MEALS_KEY, JSON.stringify(favoriteMeals.value));
+};
 // Funktion zum Initialisieren der Datenbank
 const initializeDatabase = async () => {
     try {
@@ -93,6 +107,19 @@ const fetchMenu = () => {
         menuItems.value = getMenuForCanteenAndDate(selectedCanteenId.value, selectedDate.value);
     }
 };
+const toggleFavoriteMeal = (meal) => {
+    const index = favoriteMeals.value.findIndex(fav => fav.id === meal.id);
+    if (index !== -1) {
+        favoriteMeals.value.splice(index, 1);
+    }
+    else {
+        favoriteMeals.value.push(meal);
+    }
+    saveFavoriteMeals();
+};
+const isFavoriteMeal = (meal) => {
+    return favoriteMeals.value.some(fav => fav.id === meal.id);
+};
 // Favoriten-Menü umschalten
 const toggleFavoriteMensa = (mensa) => {
     const index = favoriteMensas.value.findIndex(fav => fav.id === mensa.id);
@@ -112,6 +139,7 @@ onMounted(async () => {
     applyFilters();
     await initializeDatabase();
     loadFavoriteMensas();
+    loadFavoriteMeals();
 });
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;
@@ -206,6 +234,18 @@ function __VLS_template() {
                         (badge.description);
                     }
                 }
+                __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({ ...{ onClick: (...[$event]) => {
+                            if (!((__VLS_ctx.selectedCanteenId)))
+                                return;
+                            if (!((__VLS_ctx.menuItems.length)))
+                                return;
+                            __VLS_ctx.toggleFavoriteMeal(item);
+                            // @ts-ignore
+                            [toggleFavoriteMeal,];
+                        } }, });
+                (__VLS_ctx.isFavoriteMeal(item) ? __VLS_ctx.t('removeFavorite') : __VLS_ctx.t('addFavorite'));
+                // @ts-ignore
+                [t, t, isFavoriteMeal,];
             }
         }
         else {
@@ -400,6 +440,8 @@ function __VLS_template() {
                 filteredMensas: filteredMensas,
                 getCurrentDayHours: getCurrentDayHours,
                 fetchMenu: fetchMenu,
+                toggleFavoriteMeal: toggleFavoriteMeal,
+                isFavoriteMeal: isFavoriteMeal,
                 toggleFavoriteMensa: toggleFavoriteMensa,
                 isFavorite: isFavorite,
             };

@@ -3,7 +3,7 @@
     <div class="heading-container">
       <h1>{{ t('welcome') }}</h1>
       <h3>{{ t('discover') }}</h3>
-      <RouterLink :to="`/mensa/${nearestMensa.id}`" v-if="nearestMensa" class="next-meal-container">
+      <div v-if="nearestMensa" class="next-meal-container">
         <div class="next-meal-content">
           <p>{{ t('nearest') }}:</p>
           <h3>{{ nearestMensa.name }} ({{ distanceToNearestMensa?.toFixed(2) }} km)</h3>
@@ -13,13 +13,13 @@
           </div>
         </div>
         <ChevronRightIcon/>
-      </RouterLink>
+      </div>
     </div>
     <img src="@/assets/home_vector.svg" alt="Mensa Marvel" class="mensa-logo"/>
   </div>
 
-  <div v-if="width < SMALL_BREAKPOINT" class="home-view">
-    <RouterLink  :to="`/mensa/${nearestMensa.id}`" v-if="nearestMensa" class="next-meal-container">
+  <div v-if="width < SMALL_BREAKPOINT" >
+    <div v-if="nearestMensa" class="next-meal-container">
       <div class="next-meal-content">
         <p>{{ t('nearest') }}:</p>
         <h3>{{ nearestMensa.name }} ({{ distanceToNearestMensa?.toFixed(2) }} km)</h3>
@@ -28,12 +28,13 @@
           {{ nearestMensa.address.street }}, {{ nearestMensa.address.city }}
         </div>
       </div>
+      </div>
       <ChevronRightIcon/>
-    </RouterLink>
+
 
     <div class="header-container">
       Mensen
-      <router-link to="/mensa-list">alle anzeigen</router-link>
+
     </div>
 
     <div v-for="mensa in firstThreeMensas" :key="mensa.id" class="mensen-container">
@@ -55,12 +56,11 @@ import {useI18n} from 'vue-i18n';
 import {ref, onMounted, computed} from 'vue';
 import {Mensa} from '@/types/mensainterface';
 import localforage from "localforage";
-import {fetchMensas} from "@/service/mensaService";
 import {SMALL_BREAKPOINT, windowService} from "@/service/windowService";
 import LocationIcon from '../assets/icons/LocationIcon.vue';
 import ChevronRightIcon from '../assets/icons/ChevronRightIcon.vue';
 
-const {t, locale} = useI18n();
+const {t} = useI18n();
 const location = ref<string | null>(null);
 const nearestMensa = ref<Mensa | null>(null);
 const mensas = ref<Mensa[]>([]);

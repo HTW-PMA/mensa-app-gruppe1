@@ -3,13 +3,13 @@ import { setLocalStorageItem } from './storageService';
 const FAVORITE_MENSA_KEY = 'favoriteMensa';
 const FAVORITE_DISHES_KEY = 'favoriteDishes';
 const NOTIFICATIONS_KEY = 'notificationsPreferences';
-export const favoriteMensas = ref([]);
-export const favoriteDishes = ref([]);
+export const Mensa = ref([]);
+export const MenuItem = ref([]);
 export const notificationsPreferences = ref(false);
-watch(favoriteMensas, (newValue) => {
+watch(Mensa, (newValue) => {
     setLocalStorageItem(FAVORITE_MENSA_KEY, newValue);
 });
-watch(favoriteDishes, (newValue) => {
+watch(MenuItem, (newValue) => {
     setLocalStorageItem(FAVORITE_DISHES_KEY, newValue);
 });
 watch(notificationsPreferences, (newValue) => {

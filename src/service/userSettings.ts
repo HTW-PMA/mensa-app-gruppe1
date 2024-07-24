@@ -5,14 +5,14 @@ const FAVORITE_MENSA_KEY = 'favoriteMensa';
 const FAVORITE_DISHES_KEY = 'favoriteDishes';
 const NOTIFICATIONS_KEY = 'notificationsPreferences';
 
-export const favoriteMensas = ref<any[]>([]);
-export const favoriteDishes = ref<string[]>([]);
+export const Mensa = ref<any[]>([]);
+export const MenuItem = ref<String[]>([]);
 export const notificationsPreferences = ref<boolean>(false);
-watch(favoriteMensas, (newValue) => {
+watch(Mensa, (newValue) => {
     setLocalStorageItem(FAVORITE_MENSA_KEY, newValue);
 });
 
-watch(favoriteDishes, (newValue) => {
+watch(MenuItem, (newValue) => {
     setLocalStorageItem(FAVORITE_DISHES_KEY, newValue);
 });
 

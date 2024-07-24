@@ -32,6 +32,7 @@
     <!-- Ladeanzeige -->
     <div v-if="loading" class="loading-spinner">{{ t('loading') }}</div>
 
+
     <!-- Menü für die ausgewählte Mensa und Datum -->
     <div v-if="selectedCanteenId" class="menu-container">
       <h3>{{ t('MENÜ', { day: selectedDate }) }}</h3>
@@ -60,6 +61,9 @@
                   </li>
                 </ul>
               </div>
+              <button @click="toggleFavoriteMeal(item)">
+                {{ isFavoriteMeal(item) ? t('removeFavorite') : t('addFavorite') }}
+              </button>
             </div>
           </div>
         </div>
@@ -69,7 +73,9 @@
       </div>
     </div>
 
-    <!-- Filterbereich -->
+
+
+<!-- Filterbereich -->
     <div class="filters-container">
       <input v-model="filters.search" @input="applyFilters" :placeholder="t('Name, PLZ, Bezirk')"/>
       <input v-model="filters.openAt" @input="applyFilters" :placeholder="t('filters.filterOpenAt')" type="time"/>
@@ -166,6 +172,24 @@ const filters = ref({
   openAt: '',
 });
 
+
+const FAVORITE_MEALS_KEY = 'favoriteMeals';
+const favoriteMeals = ref<MenuItem[]>([]);
+
+const loadFavoriteMeals = () => {
+  const storedMeals = localStorage.getItem(FAVORITE_MEALS_KEY);
+  if (storedMeals) {
+    favoriteMeals.value = JSON.parse(storedMeals);
+  } else {
+    favoriteMeals.value = [];
+  }
+};
+
+const saveFavoriteMeals = () => {
+  localStorage.setItem(FAVORITE_MEALS_KEY, JSON.stringify(favoriteMeals.value));
+};
+
+
 // Funktion zum Initialisieren der Datenbank
 const initializeDatabase = async () => {
   try {
@@ -245,6 +269,20 @@ const fetchMenu = () => {
   }
 };
 
+const toggleFavoriteMeal = (meal: MenuItem) => {
+  const index = favoriteMeals.value.findIndex(fav => fav.id === meal.id);
+  if (index !== -1) {
+    favoriteMeals.value.splice(index, 1);
+  } else {
+    favoriteMeals.value.push(meal);
+  }
+  saveFavoriteMeals();
+};
+
+const isFavoriteMeal = (meal: MenuItem) => {
+  return favoriteMeals.value.some(fav => fav.id === meal.id);
+};
+
 // Favoriten-Menü umschalten
 const toggleFavoriteMensa = (mensa: Mensa) => {
   const index = favoriteMensas.value.findIndex(fav => fav.id === mensa.id);
@@ -266,6 +304,7 @@ onMounted(async () => {
   applyFilters();
   await initializeDatabase();
   loadFavoriteMensas();
+  loadFavoriteMeals();
 });
 </script>
 
