@@ -36,7 +36,7 @@
       <router-link to="/mensa-list">alle anzeigen</router-link>
     </div>
 
-    <div v-for="mensa in firstThreeMensas" :key="mensa.id" class="mensen-container">
+    <RouterLink :to="`/mensa/${mensa.id}`" v-for="mensa in firstThreeMensas" :key="mensa.id" class="mensen-container">
       <div class="content-wrapper">
         <h3>{{ mensa.name }}</h3>
         <div class="address-info">
@@ -46,7 +46,7 @@
       </div>
 
       <ChevronRightIcon/>
-    </div>
+    </RouterLink>
   </div>
 </template>
 
@@ -207,6 +207,8 @@ const firstThreeMensas = computed(() => {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  text-decoration: none;
+  color: black;
 
   .content-wrapper {
     display: flex;
@@ -276,6 +278,10 @@ const firstThreeMensas = computed(() => {
       justify-content: space-between;
       margin-top: 2rem;
       margin-bottom: .5rem;
+
+      a {
+        color: black;
+      }
     }
 
     .next-meal-container {

@@ -49,11 +49,6 @@
               </div>
 
             </div>
-
-            <div class="mensa-content-item">
-              <RatingIcon/>
-              {{ mensa.canteenReviews }}
-            </div>
           </div>
         </div>
 
@@ -79,7 +74,6 @@ import LocationIcon from "@/assets/icons/LocationIcon.vue";
 import ClockIcon from "@/assets/icons/ClockIcon.vue";
 import PhoneIcon from "@/assets/icons/PhoneIcon.vue";
 import MailIcon from "@/assets/icons/MailIcon.vue";
-import RatingIcon from "@/assets/icons/RatingIcon.vue";
 import ChevronRightIcon from "@/assets/icons/ChevronRightIcon.vue";
 
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
