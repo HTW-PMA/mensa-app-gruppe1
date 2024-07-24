@@ -42,7 +42,7 @@
       </div>
     </div>
     <div v-if="menue && !loading && !error" class="menue-container">
-      <h3>Speiseplan für {{ menue.date }}</h3>
+      <h3>Speiseplan für Heute</h3>
       <div v-for="meal in menue.meals" :key="meal.ID" class="meal-container">
         <h4>{{ meal.name }}</h4>
         <div class="meal-details">
@@ -108,7 +108,8 @@ const fetchMensaDetail = async () => {
 
 const fetchMenue = async () => {
   try {
-    menue.value = await fetchMenueByMensaId(route.params.id as string);
+    const today = new Date().toISOString().split('T')[0];
+    menue.value = await fetchMenueByMensaId(route.params.id as string, today, today);
   } catch (err) {
     error.value = 'Error fetching menue details';
   }
