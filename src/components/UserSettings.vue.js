@@ -1,15 +1,18 @@
 /* __placeholder__ */
-import { ref, watch, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { favoriteDishes, favoriteMensas } from '../service/userSettings';
+import {onMounted, ref, watch} from 'vue';
+import {useI18n} from 'vue-i18n';
+import {favoriteDishes, favoriteMensas} from '../service/userSettings';
 import DEIcon from "@/assets/icons/DEIcon.vue";
 import ENIcon from "@/assets/icons/ENIcon.vue";
+
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 // LocalStorage Schlüssel
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
 const FAVORITE_DISHES_KEY = 'favoriteDishes';
 const NOTIFICATION_PREFERENCES_KEY = 'notificationPreferences';
 // Reactive Variablen
+const favoriteMensas = ref([]);
+const favoriteDishes = ref([]);
 const notificationPreferences = ref({
     daily: false,
     newDishes: false,

@@ -58,10 +58,12 @@
 
 <script setup lang="ts">
 import {ref, watch, onMounted} from 'vue';
-import {useI18n} from 'vue-i18n';
-import {favoriteDishes, favoriteMensas, notificationsPreferences} from '../service/userSettings';
+
+const {t, locale} = useI18n();
+import {favoriteDishes, favoriteMensas} from "@/service/userSettings";
 import DEIcon from "@/assets/icons/DEIcon.vue";
 import ENIcon from "@/assets/icons/ENIcon.vue";
+import {useI18n} from "vue-i18n";
 
 // LocalStorage Schlüssel
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
@@ -69,6 +71,8 @@ const FAVORITE_DISHES_KEY = 'favoriteDishes';
 const NOTIFICATION_PREFERENCES_KEY = 'notificationPreferences';
 
 // Reactive Variablen
+const favoriteMensas = ref<any[]>([]);
+const favoriteDishes = ref<string[]>([]);
 const notificationPreferences = ref({
   daily: false,
   newDishes: false,
@@ -141,8 +145,6 @@ watch(notificationPreferences, (newValue) => {
   saveNotificationPreferences();
 }, {deep: true});
 
-const {t, locale} = useI18n();
-
 const changeLocale = (lang: 'en' | 'de') => {
   locale.value = lang;
 };
@@ -158,9 +160,11 @@ onMounted(() => {
 
 .user-settings-container {
   padding: 0 2rem;
+
 }
 
 .language-container {
+
   .btn-container {
     display: flex;
     gap: 1rem;
@@ -175,6 +179,7 @@ onMounted(() => {
       background-color: #a2a2a2; /* Highlighted background color for the active button */
     }
   }
+
 }
 
 h2 {

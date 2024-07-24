@@ -3,32 +3,46 @@
     <div class="heading-container">
       <h1>{{ t('welcome') }}</h1>
       <h3>{{ t('discover') }}</h3>
-      <RouterLink :to="`/mensa/${nearestMensa.id}`" v-if="nearestMensa" class="next-meal-container">
+      <div v-if="loading" class="loading-state">
+        <p>Loading...</p>
+      </div>
+      <div v-if="error" class="error-state">
+        <p>Error loading data: {{ error }}</p>
+        <button @click="retryFetch">Retry</button>
+      </div>
+      <RouterLink v-if="nearestMensa && !loading && !error" :to="`/mensa/${nearestMensa.id}`" class="next-meal-container">
         <div class="next-meal-content">
           <p>{{ t('nearest') }}:</p>
           <h3>{{ nearestMensa.name }} ({{ distanceToNearestMensa?.toFixed(2) }} km)</h3>
           <div>
-            <LocationIcon/>
+            <LocationIcon />
             {{ nearestMensa.address.street }}, {{ nearestMensa.address.city }}
           </div>
         </div>
-        <ChevronRightIcon/>
+        <ChevronRightIcon />
       </RouterLink>
     </div>
-    <img src="@/assets/home_vector.svg" alt="Mensa Marvel" class="mensa-logo"/>
+    <img src="@/assets/home_vector.svg" alt="Mensa Marvel" class="mensa-logo" />
   </div>
 
   <div v-if="width < SMALL_BREAKPOINT" class="home-view">
-    <RouterLink  :to="`/mensa/${nearestMensa.id}`" v-if="nearestMensa" class="next-meal-container">
+    <div v-if="loading" class="loading-state">
+      <p>Loading...</p>
+    </div>
+    <div v-if="error" class="error-state">
+      <p>Error loading data: {{ error }}</p>
+      <button @click="retryFetch">Retry</button>
+    </div>
+    <RouterLink v-if="nearestMensa && !loading && !error" :to="`/mensa/${nearestMensa.id}`" class="next-meal-container">
       <div class="next-meal-content">
         <p>{{ t('nearest') }}:</p>
         <h3>{{ nearestMensa.name }} ({{ distanceToNearestMensa?.toFixed(2) }} km)</h3>
         <div>
-          <LocationIcon/>
+          <LocationIcon />
           {{ nearestMensa.address.street }}, {{ nearestMensa.address.city }}
         </div>
       </div>
-      <ChevronRightIcon/>
+      <ChevronRightIcon />
     </RouterLink>
 
     <div class="header-container">
@@ -36,37 +50,37 @@
       <router-link to="/mensa-list">alle anzeigen</router-link>
     </div>
 
-    <div v-for="mensa in firstThreeMensas" :key="mensa.id" class="mensen-container">
+    <RouterLink v-for="mensa in firstThreeMensas" :key="mensa.id" :to="`/mensa/${mensa.id}`" class="mensen-container">
       <div class="content-wrapper">
         <h3>{{ mensa.name }}</h3>
         <div class="address-info">
-          <LocationIcon/>
+          <LocationIcon />
           <p>{{ mensa.address.street }}, {{ mensa.address.city }}</p>
         </div>
       </div>
-
-      <ChevronRightIcon/>
-    </div>
+      <ChevronRightIcon />
+    </RouterLink>
   </div>
 </template>
 
 <script setup lang="ts">
-import {useI18n} from 'vue-i18n';
-import {ref, onMounted, computed} from 'vue';
-import {Mensa} from '@/types/mensainterface';
-import localforage from "localforage";
-import {fetchMensas} from "@/service/mensaService";
-import {SMALL_BREAKPOINT, windowService} from "@/service/windowService";
-import LocationIcon from '../assets/icons/LocationIcon.vue';
-import ChevronRightIcon from '../assets/icons/ChevronRightIcon.vue';
+import { useI18n } from 'vue-i18n';
+import { ref, onMounted, computed } from 'vue';
+import { Mensa } from '@/types/mensainterface';
+import localforage from 'localforage';
+import { fetchMensas } from '@/service/mensaService';
+import { SMALL_BREAKPOINT, windowService } from '@/service/windowService';
+import LocationIcon from '@/assets/icons/LocationIcon.vue';
+import ChevronRightIcon from '@/assets/icons/ChevronRightIcon.vue';
 
-const {t, locale} = useI18n();
+const { t, locale } = useI18n();
 const location = ref<string | null>(null);
 const nearestMensa = ref<Mensa | null>(null);
 const mensas = ref<Mensa[]>([]);
 const distanceToNearestMensa = ref<number | null>(null);
 const loading = ref<boolean>(true);
-const {width} = windowService();
+const error = ref<string | null>(null);
+const { width } = windowService();
 
 const CACHE_KEY = 'mensaData';
 const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
@@ -87,8 +101,8 @@ const fetchMensasList = async () => {
       await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
     }
     loading.value = false;
-  } catch (error) {
-    console.error('Error fetching or saving mensas:', error);
+  } catch (err) {
+    error.value = 'Error fetching or saving mensas';
     loading.value = false;
   }
 };
@@ -98,18 +112,17 @@ const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
           (position) => {
-            const {latitude, longitude} = position.coords;
+            const { latitude, longitude } = position.coords;
             location.value = `Latitude: ${latitude}, Longitude: ${longitude}`;
-            resolve({latitude, longitude});
+            resolve({ latitude, longitude });
           },
-          (error) => {
-            console.error('Error getting location:', error);
-            location.value = 'Unable to retrieve location';
-            reject(error);
+          (err) => {
+            error.value = 'Error getting location';
+            reject(err);
           }
       );
     } else {
-      location.value = 'Geolocation is not supported by this browser.';
+      error.value = 'Geolocation is not supported by this browser.';
       reject(new Error('Geolocation is not supported by this browser.'));
     }
   });
@@ -121,7 +134,7 @@ const findNearestMensa = (userLat: number, userLng: number) => {
 
   mensas.value.forEach((mensa) => {
     if (mensa.address && mensa.address.geoLocation) {
-      const {latitude: mensaLat, longitude: mensaLng} = mensa.address.geoLocation;
+      const { latitude: mensaLat, longitude: mensaLng } = mensa.address.geoLocation;
       const distance = getDistance(userLat, userLng, mensaLat, mensaLng);
       if (distance < minDistance) {
         minDistance = distance;
@@ -147,24 +160,25 @@ const getDistance = (lat1: number, lng1: number, lat2: number, lng2: number) => 
   return R * c; // Distance in km
 };
 
-onMounted(async () => {
+const retryFetch = async () => {
+  error.value = null;
+  loading.value = true;
+  await fetchMensasList();
   try {
-    const data = await localforage.getItem<Mensa[]>('mensaData');
-    if (data) {
-      mensas.value = data;
-      loading.value = false;
-    } else {
-      await fetchMensasList();
-    }
     const userLocation = await getLocation();
     findNearestMensa(userLocation.latitude, userLocation.longitude);
-  } catch (error) {
-    console.error('Error fetching Mensas or getting location:', error);
+  } catch (err) {
+    error.value = 'Error fetching location';
   }
+  loading.value = false;
+};
+
+onMounted(async () => {
+  await retryFetch();
 });
 
 const firstThreeMensas = computed(() => {
-  return mensas.value.slice(0, 4);
+  return mensas.value.slice(0, 3);
 });
 </script>
 
@@ -207,12 +221,15 @@ const firstThreeMensas = computed(() => {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  text-decoration: none;
+  color: black;
 
   .content-wrapper {
     display: flex;
     flex-direction: column;
 
-    h3,p {
+    h3,
+    p {
       margin: 0;
     }
 
@@ -222,7 +239,6 @@ const firstThreeMensas = computed(() => {
       gap: 5px;
     }
   }
-
 }
 
 .next-meal-container {
@@ -234,11 +250,7 @@ const firstThreeMensas = computed(() => {
   padding: 1rem;
   border: solid 1px rgb(91, 54, 46, 0.21);
   border-radius: 12px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1),
-  0 15px 30px rgba(0, 0, 0, 0.1),
-  0 40px 40px rgba(0, 0, 0, 0.1),
-  0 80px 60px rgba(0, 0, 0, 0.05),
-  0 130px 85px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 15px 30px rgba(0, 0, 0, 0.1), 0 40px 40px rgba(0, 0, 0, 0.1), 0 80px 60px rgba(0, 0, 0, 0.05), 0 130px 85px rgba(0, 0, 0, 0.02);
 
   display: flex;
   justify-content: space-between;
@@ -250,7 +262,8 @@ const firstThreeMensas = computed(() => {
     flex-direction: column;
     gap: 5px;
 
-    p, h3 {
+    p,
+    h3 {
       margin: 0;
     }
 
@@ -259,6 +272,16 @@ const firstThreeMensas = computed(() => {
       display: flex;
     }
   }
+}
+
+.loading-state,
+.error-state {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.error-state button {
+  margin-top: 10px;
 }
 
 @media (max-width: 690px) {
@@ -274,7 +297,11 @@ const firstThreeMensas = computed(() => {
       display: flex;
       justify-content: space-between;
       margin-top: 2rem;
-      margin-bottom: .5rem;
+      margin-bottom: 0.5rem;
+
+      a {
+        color: black;
+      }
     }
 
     .next-meal-container {
@@ -316,11 +343,10 @@ const firstThreeMensas = computed(() => {
 }
 
 @media (max-width: 1250px) {
-  .home-view{
+  .home-view {
     img {
       width: 650px;
     }
   }
 }
-
 </style>

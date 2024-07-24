@@ -101,6 +101,7 @@ const error = ref<string | null>(null);
 const fetchMensaDetail = async () => {
   try {
     mensa.value = await fetchMensaById(route.params.id as string);
+    console.log(route.params.id)
   } catch (err) {
     error.value = 'Error fetching mensa details';
   }
