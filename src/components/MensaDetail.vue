@@ -8,7 +8,18 @@
       <button @click="fetchData">Erneut versuchen</button>
     </div>
     <div v-if="mensa && !loading && !error" class="mensa-details">
-      <h2>{{ mensa.name }}</h2>
+      <div class="heading">
+        <h2>{{ mensa.name }}</h2>
+        <button @click="handleBookmark">
+          <template v-if="isBookmarked">
+            <UnBookmarkIcon/>
+          </template>
+          <template v-else>
+            <BookmarkIcon/>
+          </template>
+        </button>
+      </div>
+
       <div class="mensa-details-content">
         <LocationIcon/>
         <div class="address-container">
@@ -80,16 +91,18 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
-import {useRoute} from 'vue-router';
-import {Mensa} from '@/types/mensainterface';
-import {fetchMensaById} from '@/service/mensaService';
-import {fetchMenueByMensaId} from '@/service/menueService';
-import {MenueResponse} from '@/types/menueInterface';
+import { onMounted, ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { Mensa } from '@/types/mensainterface';
+import { fetchMensaById } from '@/service/mensaService';
+import { fetchMenueByMensaId } from '@/service/menueService';
+import { MenueResponse } from '@/types/menueInterface';
 import LocationIcon from "@/assets/icons/LocationIcon.vue";
 import ClockIcon from "@/assets/icons/ClockIcon.vue";
 import MailIcon from "@/assets/icons/MailIcon.vue";
 import PhoneIcon from "@/assets/icons/PhoneIcon.vue";
+import BookmarkIcon from "@/assets/icons/BookmarkIcon.vue";
+import UnBookmarkIcon from "@/assets/icons/UnBookmarkIcon.vue";
 
 const route = useRoute();
 const mensa = ref<Mensa | null>(null);
@@ -97,11 +110,12 @@ const menue = ref<MenueResponse | null>(null);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 
+const FAVORITE_MENSA_KEY = 'favoriteMensas';
+const favoriteMensas = ref<Mensa[]>([]);
 
 const fetchMensaDetail = async () => {
   try {
     mensa.value = await fetchMensaById(route.params.id as string);
-    console.log(route.params.id)
   } catch (err) {
     error.value = 'Error fetching mensa details';
   }
@@ -116,6 +130,35 @@ const fetchMenue = async () => {
   }
 };
 
+const isBookmarked = computed(() => {
+  return mensa.value ? favoriteMensas.value.some(favMensa => favMensa.id === mensa.value!.id) : false;
+});
+
+const handleBookmark = () => {
+  if (!mensa.value) return;
+
+  const index = favoriteMensas.value.findIndex(favMensa => favMensa.id === mensa.value!.id);
+  if (index === -1) {
+    favoriteMensas.value.push(mensa.value);
+  } else {
+    favoriteMensas.value.splice(index, 1);
+  }
+  saveFavoriteMensas();
+};
+
+const loadFavoriteMensas = () => {
+  const storedFavorites = localStorage.getItem(FAVORITE_MENSA_KEY);
+  if (storedFavorites) {
+    favoriteMensas.value = JSON.parse(storedFavorites);
+  } else {
+    favoriteMensas.value = [];
+  }
+};
+
+const saveFavoriteMensas = () => {
+  localStorage.setItem(FAVORITE_MENSA_KEY, JSON.stringify(favoriteMensas.value));
+};
+
 const fetchData = async () => {
   error.value = null;
   loading.value = true;
@@ -125,8 +168,10 @@ const fetchData = async () => {
 };
 
 onMounted(async () => {
+  loadFavoriteMensas();
   await fetchData();
 });
+
 </script>
 
 <style scoped>
@@ -155,6 +200,19 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
+    .heading {
+      display: flex;
+      justify-content: space-between;
+
+      button {
+        background: transparent;
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        cursor: pointer;
+      }
+    }
 
     .mensa-details-content {
       display: flex;
