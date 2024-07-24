@@ -64,6 +64,7 @@ const {t, locale} = useI18n();
 const location = ref<string | null>(null);
 const nearestMensa = ref<Mensa | null>(null);
 const mensas = ref<Mensa[]>([]);
+import { CANTEEN_DEBUG_DATA } from '@/types/tmpDataMensa';
 const distanceToNearestMensa = ref<number | null>(null);
 const loading = ref<boolean>(true);
 const {width} = windowService();
@@ -74,21 +75,10 @@ const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 Stunden
 
 const fetchMensasList = async () => {
   try {
-    const cachedData = await localforage.getItem<Mensa[]>(CACHE_KEY);
-    const cachedTimestamp = await localforage.getItem<number>(CACHE_TIMESTAMP_KEY);
-    const now = Date.now();
-
-    if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
-      mensas.value = cachedData;
-    } else {
-      const data = await fetchMensas();
-      mensas.value = data;
-      await localforage.setItem(CACHE_KEY, data);
-      await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
-    }
+    mensas.value = CANTEEN_DEBUG_DATA;
     loading.value = false;
   } catch (error) {
-    console.error('Error fetching or saving mensas:', error);
+    console.error('Error fetching mensas:', error);
     loading.value = false;
   }
 };
@@ -98,9 +88,9 @@ const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
           (position) => {
-            const {latitude, longitude} = position.coords;
+            const { latitude, longitude } = position.coords;
             location.value = `Latitude: ${latitude}, Longitude: ${longitude}`;
-            resolve({latitude, longitude});
+            resolve({ latitude, longitude });
           },
           (error) => {
             console.error('Error getting location:', error);
@@ -121,7 +111,7 @@ const findNearestMensa = (userLat: number, userLng: number) => {
 
   mensas.value.forEach((mensa) => {
     if (mensa.address && mensa.address.geoLocation) {
-      const {latitude: mensaLat, longitude: mensaLng} = mensa.address.geoLocation;
+      const { latitude: mensaLat, longitude: mensaLng } = mensa.address.geoLocation;
       const distance = getDistance(userLat, userLng, mensaLat, mensaLng);
       if (distance < minDistance) {
         minDistance = distance;
@@ -149,13 +139,8 @@ const getDistance = (lat1: number, lng1: number, lat2: number, lng2: number) => 
 
 onMounted(async () => {
   try {
-    const data = await localforage.getItem<Mensa[]>('mensaData');
-    if (data) {
-      mensas.value = data;
-      loading.value = false;
-    } else {
-      await fetchMensasList();
-    }
+    // Direktes Laden der temporären Daten
+    await fetchMensasList();
     const userLocation = await getLocation();
     findNearestMensa(userLocation.latitude, userLocation.longitude);
   } catch (error) {
@@ -164,7 +149,7 @@ onMounted(async () => {
 });
 
 const firstThreeMensas = computed(() => {
-  return mensas.value.slice(0, 4);
+  return mensas.value.slice(0, 3); // Beachte den Index hier, um die richtigen Elemente anzuzeigen
 });
 </script>
 

@@ -1,8 +1,6 @@
 /* __placeholder__ */
 import { useI18n } from 'vue-i18n';
 import { ref, onMounted, computed } from 'vue';
-import localforage from "localforage";
-import { fetchMensas } from "@/service/mensaService";
 import { SMALL_BREAKPOINT, windowService } from "@/service/windowService";
 import LocationIcon from '../assets/icons/LocationIcon.vue';
 import ChevronRightIcon from '../assets/icons/ChevronRightIcon.vue';
@@ -11,6 +9,7 @@ const { t, locale } = useI18n();
 const location = ref(null);
 const nearestMensa = ref(null);
 const mensas = ref([]);
+import { CANTEEN_DEBUG_DATA } from '@/types/tmpDataMensa';
 const distanceToNearestMensa = ref(null);
 const loading = ref(true);
 const { width } = windowService();
@@ -19,22 +18,11 @@ const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
 const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 Stunden
 const fetchMensasList = async () => {
     try {
-        const cachedData = await localforage.getItem(CACHE_KEY);
-        const cachedTimestamp = await localforage.getItem(CACHE_TIMESTAMP_KEY);
-        const now = Date.now();
-        if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
-            mensas.value = cachedData;
-        }
-        else {
-            const data = await fetchMensas();
-            mensas.value = data;
-            await localforage.setItem(CACHE_KEY, data);
-            await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
-        }
+        mensas.value = CANTEEN_DEBUG_DATA;
         loading.value = false;
     }
     catch (error) {
-        console.error('Error fetching or saving mensas:', error);
+        console.error('Error fetching mensas:', error);
         loading.value = false;
     }
 };
@@ -87,14 +75,8 @@ const getDistance = (lat1, lng1, lat2, lng2) => {
 };
 onMounted(async () => {
     try {
-        const data = await localforage.getItem('mensaData');
-        if (data) {
-            mensas.value = data;
-            loading.value = false;
-        }
-        else {
-            await fetchMensasList();
-        }
+        // Direktes Laden der temporären Daten
+        await fetchMensasList();
         const userLocation = await getLocation();
         findNearestMensa(userLocation.latitude, userLocation.longitude);
     }
@@ -103,7 +85,7 @@ onMounted(async () => {
     }
 });
 const firstThreeMensas = computed(() => {
-    return mensas.value.slice(0, 4);
+    return mensas.value.slice(0, 3); // Beachte den Index hier, um die richtigen Elemente anzuzeigen
 });
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;

@@ -1,30 +1,54 @@
 /* __placeholder__ */
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import localforage from 'localforage';
+import { CANTEEN_DEBUG_DATA } from '../types/tmpDataMensa';
+import { MENUE_DEBUG_DATA } from '../types/tmpDataMeal';
 import LocationIcon from '../assets/icons/LocationIcon.vue';
 import ClockIcon from '../assets/icons/ClockIcon.vue';
 import PhoneIcon from '../assets/icons/PhoneIcon.vue';
 import MailIcon from '../assets/icons/MailIcon.vue';
 import RatingIcon from '../assets/icons/RatingIcon.vue';
-import ChevronRightIcon from '../assets/icons/ChevronRightIcon.vue';
+import localforage from 'localforage';
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
+const selectedDate = ref(new Date().toISOString().split('T')[0]);
+const selectedCanteenId = ref(null);
+const menuItems = ref([]);
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
+const MENSA_DATA_KEY = 'mensaData';
 const favoriteMensas = ref([]);
-const { t, locale } = useI18n();
-const mensas = ref([]);
-const loading = ref(true);
+const { t } = useI18n();
+const mensas = ref(CANTEEN_DEBUG_DATA);
+const loading = ref(false);
 const filters = ref({
     search: '',
     openAt: '',
 });
+// Funktion zum Initialisieren der Datenbank
+const initializeDatabase = async () => {
+    try {
+        const existingData = await localforage.getItem(MENSA_DATA_KEY);
+        if (!existingData) {
+            console.log("No existing data found. Adding default data...");
+            await localforage.setItem(MENSA_DATA_KEY, CANTEEN_DEBUG_DATA);
+            mensas.value = CANTEEN_DEBUG_DATA;
+        }
+        else {
+            console.log("Existing data found.");
+            mensas.value = existingData;
+        }
+    }
+    catch (error) {
+        console.error('Error initializing database:', error);
+    }
+};
+// Filter anwenden
 const applyFilters = () => {
     loading.value = true;
-    fetchMensasList().then(() => {
+    setTimeout(() => {
         loading.value = false;
-    });
+    }, 300); // Simuliere Ladeverzögerung
 };
-// Lade die Favoriten aus localStorage
+// Favoriten aus localStorage laden
 const loadFavoriteMensas = () => {
     const storedFavorites = localStorage.getItem(FAVORITE_MENSA_KEY);
     if (storedFavorites) {
@@ -34,40 +58,9 @@ const loadFavoriteMensas = () => {
         favoriteMensas.value = [];
     }
 };
-// Speichere die Favoriten in localStorage
+// Favoriten in localStorage speichern
 const saveFavoriteMensas = () => {
     localStorage.setItem(FAVORITE_MENSA_KEY, JSON.stringify(favoriteMensas.value));
-};
-const CACHE_KEY = 'mensaData';
-const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
-const CACHE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 Tage
-const fetchMensasList = async () => {
-    loadFavoriteMensas();
-    try {
-        const cachedData = await localforage.getItem(CACHE_KEY);
-        const cachedTimestamp = await localforage.getItem(CACHE_TIMESTAMP_KEY);
-        const now = Date.now();
-        console.log('Cached data:', cachedData);
-        console.log('Cached timestamp:', cachedTimestamp);
-        console.log('Current time:', now);
-        if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
-            mensas.value = cachedData;
-        }
-        else {
-            await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
-        }
-        loading.value = false;
-    }
-    catch (apiError) {
-        console.error('Error fetching from API, trying to fetch from localforage cache:', apiError);
-        try {
-            loading.value = false;
-        }
-        catch (localforageError) {
-            console.error('Error fetching from localforage:', localforageError);
-            loading.value = false;
-        }
-    }
 };
 const filteredMensas = computed(() => {
     const searchLower = filters.value.search.toLowerCase();
@@ -89,6 +82,18 @@ const getCurrentDayHours = (mensa) => {
     const currentDay = mensa.businessDays.find(day => day.day === currentDayName);
     return currentDay ? currentDay.businessHours : null;
 };
+// Menü für die ausgewählte Mensa und Datum abrufen
+const getMenuForCanteenAndDate = (canteenId, date) => {
+    const menuForDate = MENUE_DEBUG_DATA.find(menu => menu.canteenId === canteenId && menu.date === date);
+    return menuForDate ? menuForDate.meals : [];
+};
+// Menü abrufen
+const fetchMenu = () => {
+    if (selectedCanteenId.value && selectedDate.value) {
+        menuItems.value = getMenuForCanteenAndDate(selectedCanteenId.value, selectedDate.value);
+    }
+};
+// Favoriten-Menü umschalten
 const toggleFavoriteMensa = (mensa) => {
     const index = favoriteMensas.value.findIndex(fav => fav.id === mensa.id);
     if (index !== -1) {
@@ -102,22 +107,11 @@ const toggleFavoriteMensa = (mensa) => {
 const isFavorite = (mensa) => {
     return favoriteMensas.value.some(fav => fav.id === mensa.id);
 };
+watch([selectedDate, selectedCanteenId], fetchMenu);
 onMounted(async () => {
-    try {
-        const data = await localforage.getItem('mensaData');
-        if (data) {
-            mensas.value = data;
-            loading.value = false;
-            console.log(data);
-        }
-        else {
-            await fetchMensasList();
-        }
-    }
-    catch (error) {
-        console.error('Error fetching mensas from IndexedDB or API:', error);
-        await fetchMensasList();
-    }
+    applyFilters();
+    await initializeDatabase();
+    loadFavoriteMensas();
 });
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;
@@ -139,6 +133,88 @@ function __VLS_template() {
     (__VLS_ctx.t('mensaList.title'));
     // @ts-ignore
     [t,];
+    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("mensa-selector row mb-4") }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("col-md-6 mb-3") }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({ for: ("canteen-select"), ...{ class: ("form-label") }, });
+    (__VLS_ctx.t('selectCanteen'));
+    // @ts-ignore
+    [t,];
+    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("input-group") }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.select, __VLS_intrinsicElements.select)({ ...{ onChange: (__VLS_ctx.fetchMenu) }, id: ("canteen-select"), value: ((__VLS_ctx.selectedCanteenId)), ...{ class: ("form-select") }, });
+    for (const [mensa] of __VLS_getVForSourceType((__VLS_ctx.mensas))) {
+        __VLS_elementAsFunction(__VLS_intrinsicElements.option, __VLS_intrinsicElements.option)({ key: ((mensa.id)), value: ((mensa.id)), });
+        (mensa.name);
+        // @ts-ignore
+        [fetchMenu, selectedCanteenId, mensas,];
+    }
+    __VLS_elementAsFunction(__VLS_intrinsicElements.span, __VLS_intrinsicElements.span)({ ...{ class: ("input-group-text") }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.i, __VLS_intrinsicElements.i)({ ...{ class: ("bi bi-chevron-down") }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("col-md-6 mb-3") }, });
+    __VLS_elementAsFunction(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({ for: ("date-select"), ...{ class: ("form-label") }, });
+    (__VLS_ctx.t('selectDate'));
+    // @ts-ignore
+    [t,];
+    __VLS_elementAsFunction(__VLS_intrinsicElements.input)({ ...{ onChange: (__VLS_ctx.fetchMenu) }, type: ("date"), id: ("date-select"), ...{ class: ("form-control") }, });
+    (__VLS_ctx.selectedDate);
+    // @ts-ignore
+    [fetchMenu, selectedDate,];
+    if (__VLS_ctx.loading) {
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("loading-spinner") }, });
+        (__VLS_ctx.t('loading'));
+        // @ts-ignore
+        [t, loading,];
+    }
+    if (__VLS_ctx.selectedCanteenId) {
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("menu-container") }, });
+        __VLS_elementAsFunction(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({});
+        (__VLS_ctx.t('MENÜ', { day: __VLS_ctx.selectedDate }));
+        // @ts-ignore
+        [t, selectedCanteenId, selectedDate,];
+        if (__VLS_ctx.menuItems.length) {
+            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("row") }, });
+            for (const [item] of __VLS_getVForSourceType((__VLS_ctx.menuItems))) {
+                __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ key: ((item.id)), ...{ class: ("menu-item col-md-6 mb-4") }, });
+                __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("card") }, });
+                __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("card-body") }, });
+                __VLS_elementAsFunction(__VLS_intrinsicElements.h5, __VLS_intrinsicElements.h5)({ ...{ class: ("card-title") }, });
+                (item.name);
+                // @ts-ignore
+                [menuItems, menuItems,];
+                __VLS_elementAsFunction(__VLS_intrinsicElements.h6, __VLS_intrinsicElements.h6)({ ...{ class: ("card-subtitle mb-2 text-muted") }, });
+                for (const [price] of __VLS_getVForSourceType((item.prices))) {
+                    __VLS_elementAsFunction(__VLS_intrinsicElements.span, __VLS_intrinsicElements.span)({ key: ((price.priceType)), });
+                    (price.priceType);
+                    (price.price);
+                }
+                if (item.additives.length) {
+                    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("mt-2") }, });
+                    __VLS_elementAsFunction(__VLS_intrinsicElements.strong, __VLS_intrinsicElements.strong)({});
+                    __VLS_elementAsFunction(__VLS_intrinsicElements.ul, __VLS_intrinsicElements.ul)({ ...{ class: ("list-group list-group-flush") }, });
+                    for (const [additive] of __VLS_getVForSourceType((item.additives))) {
+                        __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({ key: ((additive.id)), ...{ class: ("list-group-item") }, });
+                        (additive.text);
+                    }
+                }
+                if (item.badges.length) {
+                    __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("mt-2") }, });
+                    __VLS_elementAsFunction(__VLS_intrinsicElements.strong, __VLS_intrinsicElements.strong)({});
+                    __VLS_elementAsFunction(__VLS_intrinsicElements.ul, __VLS_intrinsicElements.ul)({ ...{ class: ("list-group list-group-flush") }, });
+                    for (const [badge] of __VLS_getVForSourceType((item.badges))) {
+                        __VLS_elementAsFunction(__VLS_intrinsicElements.li, __VLS_intrinsicElements.li)({ key: ((badge.id)), ...{ class: ("list-group-item") }, });
+                        __VLS_elementAsFunction(__VLS_intrinsicElements.strong, __VLS_intrinsicElements.strong)({});
+                        (badge.name);
+                        (badge.description);
+                    }
+                }
+            }
+        }
+        else {
+            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("alert alert-info") }, });
+            (__VLS_ctx.t('Keine Speisen vorhanden'));
+            // @ts-ignore
+            [t,];
+        }
+    }
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("filters-container") }, });
     __VLS_elementAsFunction(__VLS_intrinsicElements.input)({ ...{ onInput: (__VLS_ctx.applyFilters) }, placeholder: ((__VLS_ctx.t('Name, PLZ, Bezirk'))), });
     (__VLS_ctx.filters.search);
@@ -156,19 +232,7 @@ function __VLS_template() {
     }
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("mensa-item-container") }, });
     for (const [mensa] of __VLS_getVForSourceType((__VLS_ctx.filteredMensas))) {
-        // @ts-ignore
-        const __VLS_0 = {}
-            .RouterLink;
-        ({}.RouterLink);
-        ({}.RouterLink);
-        __VLS_components.RouterLink;
-        __VLS_components.RouterLink;
-        // @ts-ignore
-        [RouterLink, RouterLink,];
-        // @ts-ignore
-        const __VLS_1 = __VLS_asFunctionalComponent(__VLS_0, new __VLS_0({ to: ((`/mensa/${mensa.id}`)), key: ((mensa.id)), ...{ class: ("mensa-item") }, }));
-        const __VLS_2 = __VLS_1({ to: ((`/mensa/${mensa.id}`)), key: ((mensa.id)), ...{ class: ("mensa-item") }, }, ...__VLS_functionalComponentArgsRest(__VLS_1));
-        ({}({ to: ((`/mensa/${mensa.id}`)), key: ((mensa.id)), ...{ class: ("mensa-item") }, }));
+        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ key: ((mensa.id)), ...{ class: ("mensa-item") }, });
         __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("mensa-item-content") }, });
         __VLS_elementAsFunction(__VLS_intrinsicElements.h2, __VLS_intrinsicElements.h2)({});
         (mensa.name);
@@ -179,10 +243,10 @@ function __VLS_template() {
         // @ts-ignore
         [LocationIcon,];
         // @ts-ignore
-        const __VLS_6 = __VLS_asFunctionalComponent(LocationIcon, new LocationIcon({}));
-        const __VLS_7 = __VLS_6({}, ...__VLS_functionalComponentArgsRest(__VLS_6));
+        const __VLS_0 = __VLS_asFunctionalComponent(LocationIcon, new LocationIcon({}));
+        const __VLS_1 = __VLS_0({}, ...__VLS_functionalComponentArgsRest(__VLS_0));
         ({}({}));
-        const __VLS_10 = __VLS_pickFunctionalComponentCtx(LocationIcon, __VLS_7);
+        const __VLS_4 = __VLS_pickFunctionalComponentCtx(LocationIcon, __VLS_1);
         __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("address-container") }, });
         __VLS_elementAsFunction(__VLS_intrinsicElements.strong, __VLS_intrinsicElements.strong)({});
         (mensa.address.street);
@@ -193,10 +257,10 @@ function __VLS_template() {
         // @ts-ignore
         [ClockIcon,];
         // @ts-ignore
-        const __VLS_11 = __VLS_asFunctionalComponent(ClockIcon, new ClockIcon({}));
-        const __VLS_12 = __VLS_11({}, ...__VLS_functionalComponentArgsRest(__VLS_11));
+        const __VLS_5 = __VLS_asFunctionalComponent(ClockIcon, new ClockIcon({}));
+        const __VLS_6 = __VLS_5({}, ...__VLS_functionalComponentArgsRest(__VLS_5));
         ({}({}));
-        const __VLS_15 = __VLS_pickFunctionalComponentCtx(ClockIcon, __VLS_12);
+        const __VLS_9 = __VLS_pickFunctionalComponentCtx(ClockIcon, __VLS_6);
         if (__VLS_ctx.getCurrentDayHours(mensa)) {
             __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
             __VLS_elementAsFunction(__VLS_intrinsicElements.strong, __VLS_intrinsicElements.strong)({});
@@ -222,39 +286,37 @@ function __VLS_template() {
         // @ts-ignore
         [PhoneIcon,];
         // @ts-ignore
-        const __VLS_16 = __VLS_asFunctionalComponent(PhoneIcon, new PhoneIcon({}));
-        const __VLS_17 = __VLS_16({}, ...__VLS_functionalComponentArgsRest(__VLS_16));
+        const __VLS_10 = __VLS_asFunctionalComponent(PhoneIcon, new PhoneIcon({}));
+        const __VLS_11 = __VLS_10({}, ...__VLS_functionalComponentArgsRest(__VLS_10));
         ({}({}));
-        const __VLS_20 = __VLS_pickFunctionalComponentCtx(PhoneIcon, __VLS_17);
+        const __VLS_14 = __VLS_pickFunctionalComponentCtx(PhoneIcon, __VLS_11);
         (mensa.contactInfo.phone);
         __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({});
         // @ts-ignore
         [MailIcon,];
         // @ts-ignore
-        const __VLS_21 = __VLS_asFunctionalComponent(MailIcon, new MailIcon({}));
-        const __VLS_22 = __VLS_21({}, ...__VLS_functionalComponentArgsRest(__VLS_21));
+        const __VLS_15 = __VLS_asFunctionalComponent(MailIcon, new MailIcon({}));
+        const __VLS_16 = __VLS_15({}, ...__VLS_functionalComponentArgsRest(__VLS_15));
         ({}({}));
-        const __VLS_25 = __VLS_pickFunctionalComponentCtx(MailIcon, __VLS_22);
+        const __VLS_19 = __VLS_pickFunctionalComponentCtx(MailIcon, __VLS_16);
         (mensa.contactInfo.email);
         __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("mensa-content-item") }, });
         // @ts-ignore
         [RatingIcon,];
         // @ts-ignore
-        const __VLS_26 = __VLS_asFunctionalComponent(RatingIcon, new RatingIcon({}));
-        const __VLS_27 = __VLS_26({}, ...__VLS_functionalComponentArgsRest(__VLS_26));
+        const __VLS_20 = __VLS_asFunctionalComponent(RatingIcon, new RatingIcon({}));
+        const __VLS_21 = __VLS_20({}, ...__VLS_functionalComponentArgsRest(__VLS_20));
         ({}({}));
-        const __VLS_30 = __VLS_pickFunctionalComponentCtx(RatingIcon, __VLS_27);
-        (mensa.canteenReviews);
-        __VLS_elementAsFunction(__VLS_intrinsicElements.a, __VLS_intrinsicElements.a)({});
+        const __VLS_24 = __VLS_pickFunctionalComponentCtx(RatingIcon, __VLS_21);
+        (mensa.canteenReviews.length);
+        __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({ ...{ onClick: (...[$event]) => {
+                    __VLS_ctx.toggleFavoriteMensa(mensa);
+                    // @ts-ignore
+                    [toggleFavoriteMensa,];
+                } }, });
+        (__VLS_ctx.isFavorite(mensa) ? __VLS_ctx.t('removeFavorite') : __VLS_ctx.t('addFavorite'));
         // @ts-ignore
-        [ChevronRightIcon,];
-        // @ts-ignore
-        const __VLS_31 = __VLS_asFunctionalComponent(ChevronRightIcon, new ChevronRightIcon({}));
-        const __VLS_32 = __VLS_31({}, ...__VLS_functionalComponentArgsRest(__VLS_31));
-        ({}({}));
-        const __VLS_35 = __VLS_pickFunctionalComponentCtx(ChevronRightIcon, __VLS_32);
-        (__VLS_5.slots).default;
-        const __VLS_5 = __VLS_pickFunctionalComponentCtx(__VLS_0, __VLS_2);
+        [t, t, isFavorite,];
     }
     if (__VLS_ctx.mensas.length === 0) {
         __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
@@ -265,6 +327,43 @@ function __VLS_template() {
     if (typeof __VLS_styleScopedClasses === 'object' && !Array.isArray(__VLS_styleScopedClasses)) {
         __VLS_styleScopedClasses['mensa-list-container'];
         __VLS_styleScopedClasses['header'];
+        __VLS_styleScopedClasses['mensa-selector'];
+        __VLS_styleScopedClasses['row'];
+        __VLS_styleScopedClasses['mb-4'];
+        __VLS_styleScopedClasses['col-md-6'];
+        __VLS_styleScopedClasses['mb-3'];
+        __VLS_styleScopedClasses['form-label'];
+        __VLS_styleScopedClasses['input-group'];
+        __VLS_styleScopedClasses['form-select'];
+        __VLS_styleScopedClasses['input-group-text'];
+        __VLS_styleScopedClasses['bi'];
+        __VLS_styleScopedClasses['bi-chevron-down'];
+        __VLS_styleScopedClasses['col-md-6'];
+        __VLS_styleScopedClasses['mb-3'];
+        __VLS_styleScopedClasses['form-label'];
+        __VLS_styleScopedClasses['form-control'];
+        __VLS_styleScopedClasses['loading-spinner'];
+        __VLS_styleScopedClasses['menu-container'];
+        __VLS_styleScopedClasses['row'];
+        __VLS_styleScopedClasses['menu-item'];
+        __VLS_styleScopedClasses['col-md-6'];
+        __VLS_styleScopedClasses['mb-4'];
+        __VLS_styleScopedClasses['card'];
+        __VLS_styleScopedClasses['card-body'];
+        __VLS_styleScopedClasses['card-title'];
+        __VLS_styleScopedClasses['card-subtitle'];
+        __VLS_styleScopedClasses['mb-2'];
+        __VLS_styleScopedClasses['text-muted'];
+        __VLS_styleScopedClasses['mt-2'];
+        __VLS_styleScopedClasses['list-group'];
+        __VLS_styleScopedClasses['list-group-flush'];
+        __VLS_styleScopedClasses['list-group-item'];
+        __VLS_styleScopedClasses['mt-2'];
+        __VLS_styleScopedClasses['list-group'];
+        __VLS_styleScopedClasses['list-group-flush'];
+        __VLS_styleScopedClasses['list-group-item'];
+        __VLS_styleScopedClasses['alert'];
+        __VLS_styleScopedClasses['alert-info'];
         __VLS_styleScopedClasses['filters-container'];
         __VLS_styleScopedClasses['loading-spinner'];
         __VLS_styleScopedClasses['mensa-item-container'];
@@ -290,7 +389,9 @@ function __VLS_template() {
                 PhoneIcon: PhoneIcon,
                 MailIcon: MailIcon,
                 RatingIcon: RatingIcon,
-                ChevronRightIcon: ChevronRightIcon,
+                selectedDate: selectedDate,
+                selectedCanteenId: selectedCanteenId,
+                menuItems: menuItems,
                 t: t,
                 mensas: mensas,
                 loading: loading,
@@ -298,6 +399,9 @@ function __VLS_template() {
                 applyFilters: applyFilters,
                 filteredMensas: filteredMensas,
                 getCurrentDayHours: getCurrentDayHours,
+                fetchMenu: fetchMenu,
+                toggleFavoriteMensa: toggleFavoriteMensa,
+                isFavorite: isFavorite,
             };
         },
     });
