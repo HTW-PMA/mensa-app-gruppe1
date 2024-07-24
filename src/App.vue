@@ -16,6 +16,7 @@ const {width} = windowService()
       <nav class="desktop-nav" v-if="width > SMALL_BREAKPOINT">
         <router-link to="/">Home</router-link>
         <router-link to="/mensa-list">Mensa List</router-link>
+        <router-link to ="/Gerichtlist">Meals</router-link>
         <router-link to="/about">About Us</router-link>
         <router-link to="/settings"><UserIcon></UserIcon></router-link>
       </nav>
@@ -24,6 +25,8 @@ const {width} = windowService()
     <nav class="mobile-nav" v-if="width < SMALL_BREAKPOINT">
       <router-link to="/"> <HomeIcon></HomeIcon> Home</router-link>
       <router-link to="/mensa-list"> <ListIcon></ListIcon> List</router-link>
+      <router-link to ="/Gerichtlist">Meals</router-link>
+      <router-link to="/about">About Us</router-link>
       <router-link to="/settings"><UserIcon></UserIcon> Profile</router-link>
 
     </nav>
