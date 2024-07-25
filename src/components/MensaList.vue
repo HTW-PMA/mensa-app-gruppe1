@@ -9,7 +9,7 @@
       <input v-model="filters.openAt" @input="applyFilters" :placeholder="t('filters.filterOpenAt')" type="time"/>
     </div>
 
-    <div v-if="loading" class="loading-spinner">{{ t('loading') }}</div>
+    <div v-if="loading" class="loading-spinner"></div>
 
     <div class="mensa-item-container">
       <RouterLink :to="`/mensa/${mensa.id}`" v-for="mensa in filteredMensas" :key="mensa.id" class="mensa-item">
@@ -75,13 +75,14 @@ import ClockIcon from "@/assets/icons/ClockIcon.vue";
 import PhoneIcon from "@/assets/icons/PhoneIcon.vue";
 import MailIcon from "@/assets/icons/MailIcon.vue";
 import ChevronRightIcon from "@/assets/icons/ChevronRightIcon.vue";
+import {CANTEEN_DEBUG_DATA} from "@/types/tmpDataMensa";
 
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
 const favoriteMensas = ref<Mensa[]>([]);
 
 const {t, locale} = useI18n();
 
-const mensas = ref<Mensa[]>([]);
+const mensas = ref<Mensa[]>(CANTEEN_DEBUG_DATA);
 const loading = ref<boolean>(true);
 const filters = ref({
   search: '',
@@ -183,20 +184,7 @@ const isFavorite = (mensa: Mensa) => {
 };
 
 onMounted(async () => {
-  try {
-    const data = await localforage.getItem<Mensa[]>('mensaData');
-    if (data) {
-      mensas.value = data;
-      loading.value = false;
 
-      console.log(data)
-    } else {
-      await fetchMensasList();
-    }
-  } catch (error) {
-    console.error('Error fetching mensas from IndexedDB or API:', error);
-    await fetchMensasList();
-  }
 });
 </script>
 

@@ -30,8 +30,7 @@ export interface MealReview {
   lastUpdated: string;
   createdAt: string;
 }
-
-export interface Meal {
+ interface Meal {
   ID: string;
   name: string;
   prices: Price[];

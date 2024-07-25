@@ -10,8 +10,8 @@
     <div v-if="mensa && !loading && !error" class="mensa-details">
       <div class="heading">
         <h2>{{ mensa.name }}</h2>
-        <button @click="handleBookmark">
-          <template v-if="isBookmarked">
+        <button @click="handleMensaBookmark">
+          <template v-if="isMensaBookmarked">
             <UnBookmarkIcon/>
           </template>
           <template v-else>
@@ -32,9 +32,17 @@
         <ClockIcon/>
         <div class="address-container">
           <strong>Öffnungszeiten</strong>
-          <div v-for="openTime in mensa.businessDays" :key="openTime.day" class="open-time-container">
+          <div
+              v-for="openTime in mensa.businessDays"
+              :key="openTime.day"
+              class="open-time-container"
+          >
             <strong>{{ openTime.day }}:</strong>
-            <div v-for="times in openTime.businessHours" :key="times.openAt" class="times">
+            <div
+                v-for="times in openTime.businessHours"
+                :key="times.openAt"
+                class="times"
+            >
               {{ times.businessHourType }}: {{ times.openAt }} - {{ times.closeAt }}
             </div>
             <div v-if="openTime.businessHours.length === 0">Geschlossen</div>
@@ -53,9 +61,29 @@
       </div>
     </div>
     <div v-if="menue && !loading && !error" class="menue-container">
-      <h3>Speiseplan für Heute</h3>
+      <div class="menue-heading">
+        <h3>Speiseplan für Heute</h3>
+        <div class="col-md-6 mb-3">
+          <label for="date-select" class="form-label">Wähle Datum: </label>
+          <input type="date" id="date-select" v-model="selectedDate" @change="fetchMenue"
+                 class="form-control"/>
+        </div>
+      </div>
+
+      <div v-if="menue.meals.length === 0">Heute keine Speisen</div>
       <div v-for="meal in menue.meals" :key="meal.ID" class="meal-container">
-        <h4>{{ meal.name }}</h4>
+        <div class="meal-heading">
+          <h4>{{ meal.name }}</h4>
+          <button @click="() => handleMealBookmark(meal)">
+            <template v-if="isMealBookmarked(meal)">
+              <UnBookmarkIcon/>
+            </template>
+            <template v-else>
+              <BookmarkIcon/>
+            </template>
+          </button>
+        </div>
+
         <div class="meal-details">
           <div>
             <strong>Kategorie:</strong> {{ meal.category }}
@@ -90,28 +118,33 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { Mensa } from '@/types/mensainterface';
-import { fetchMensaById } from '@/service/mensaService';
-import { fetchMenueByMensaId } from '@/service/menueService';
-import { MenueResponse } from '@/types/menueInterface';
+import {onMounted, ref, computed} from 'vue';
+import {useRoute} from 'vue-router';
+import {Mensa} from '@/types/mensainterface';
+import {fetchMensaById} from '@/service/mensaService';
+import {fetchMenueByMensaId} from '@/service/menueService';
+import {Meal, MenueResponse} from '@/types/menueInterface';
 import LocationIcon from "@/assets/icons/LocationIcon.vue";
 import ClockIcon from "@/assets/icons/ClockIcon.vue";
 import MailIcon from "@/assets/icons/MailIcon.vue";
 import PhoneIcon from "@/assets/icons/PhoneIcon.vue";
 import BookmarkIcon from "@/assets/icons/BookmarkIcon.vue";
 import UnBookmarkIcon from "@/assets/icons/UnBookmarkIcon.vue";
+import {CANTEEN_DEBUG_DATA} from "@/types/tmpDataMensa";
 
 const route = useRoute();
 const mensa = ref<Mensa | null>(null);
 const menue = ref<MenueResponse | null>(null);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
+const selectedDate = ref<string>(new Date().toISOString().split('T')[0]);
 
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
+const FAVORITE_DISHES_KEY = 'favoriteDishes';
 const favoriteMensas = ref<Mensa[]>([]);
+const favoriteDishes = ref<Meal[]>([]);
 
 const fetchMensaDetail = async () => {
   try {
@@ -124,17 +157,22 @@ const fetchMensaDetail = async () => {
 const fetchMenue = async () => {
   try {
     const today = new Date().toISOString().split('T')[0];
-    menue.value = await fetchMenueByMensaId(route.params.id as string, today, today);
+    menue.value = await fetchMenueByMensaId(route.params.id as string, selectedDate.value, selectedDate.value);
+    console.log("data changed ")
   } catch (err) {
     error.value = 'Error fetching menue details';
   }
 };
 
-const isBookmarked = computed(() => {
+const isMensaBookmarked = computed(() => {
   return mensa.value ? favoriteMensas.value.some(favMensa => favMensa.id === mensa.value!.id) : false;
 });
 
-const handleBookmark = () => {
+const isMealBookmarked = (meal: Meal) => {
+  return meal ? favoriteDishes.value.some(favMeal => favMeal.ID === meal.ID) : false;
+};
+
+const handleMensaBookmark = () => {
   if (!mensa.value) return;
 
   const index = favoriteMensas.value.findIndex(favMensa => favMensa.id === mensa.value!.id);
@@ -144,6 +182,18 @@ const handleBookmark = () => {
     favoriteMensas.value.splice(index, 1);
   }
   saveFavoriteMensas();
+};
+
+const handleMealBookmark = (meal: Meal) => {
+  if (!meal) return;
+
+  const index = favoriteDishes.value.findIndex(favMeal => favMeal.ID === meal.ID);
+  if (index === -1) {
+    favoriteDishes.value.push(meal);
+  } else {
+    favoriteDishes.value.splice(index, 1);
+  }
+  saveFavoriteDishes();
 };
 
 const loadFavoriteMensas = () => {
@@ -159,18 +209,35 @@ const saveFavoriteMensas = () => {
   localStorage.setItem(FAVORITE_MENSA_KEY, JSON.stringify(favoriteMensas.value));
 };
 
+// Lade die Favoriten aus localStorage
+const loadFavoriteDishes = () => {
+  const storedFavorites = localStorage.getItem(FAVORITE_DISHES_KEY);
+  if (storedFavorites) {
+    favoriteDishes.value = JSON.parse(storedFavorites);
+  } else {
+    favoriteDishes.value = [];
+  }
+};
+
+// Speichere die Favoriten in localStorage
+const saveFavoriteDishes = () => {
+  localStorage.setItem(FAVORITE_DISHES_KEY, JSON.stringify(favoriteDishes.value));
+};
+
 const fetchData = async () => {
   error.value = null;
   loading.value = true;
-  await fetchMensaDetail();
+  mensa.value = CANTEEN_DEBUG_DATA.find(canteen => canteen.id === route.params.id as string) || null;
   await fetchMenue();
   loading.value = false;
 };
 
 onMounted(async () => {
   loadFavoriteMensas();
+  loadFavoriteDishes();
   await fetchData();
 });
+
 
 </script>
 
@@ -239,12 +306,31 @@ onMounted(async () => {
   .menue-container {
     margin-top: 20px;
 
+    .menue-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      input {
+      }
+    }
+
     .meal-container {
       border: 1px solid rgba(91, 54, 46, 0.21);
       border-radius: 8px;
       padding: 1rem;
       margin-bottom: 10px;
       box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.2);
+
+      .meal-heading {
+        display: flex;
+        justify-content: space-between;
+
+        button {
+          width: 50px;
+          height: 50px;
+        }
+      }
 
       .meal-details {
         display: flex;

@@ -15,7 +15,7 @@ interface Badge {
     description: string;
 }
 
-interface Meal {
+export interface Meal {
     ID: string;
     name: string;
     prices: Price[];

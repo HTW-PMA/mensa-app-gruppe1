@@ -72,6 +72,7 @@ import { fetchMensas } from '@/service/mensaService';
 import { SMALL_BREAKPOINT, windowService } from '@/service/windowService';
 import LocationIcon from '@/assets/icons/LocationIcon.vue';
 import ChevronRightIcon from '@/assets/icons/ChevronRightIcon.vue';
+import {CANTEEN_DEBUG_DATA} from "@/types/tmpDataMensa";
 
 const { t, locale } = useI18n();
 const location = ref<string | null>(null);
@@ -163,7 +164,8 @@ const getDistance = (lat1: number, lng1: number, lat2: number, lng2: number) => 
 const retryFetch = async () => {
   error.value = null;
   loading.value = true;
-  await fetchMensasList();
+  mensas.value = CANTEEN_DEBUG_DATA;
+  //await fetchMensasList();
   try {
     const userLocation = await getLocation();
     findNearestMensa(userLocation.latitude, userLocation.longitude);
