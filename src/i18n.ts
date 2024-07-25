@@ -11,6 +11,7 @@ const messages = {
         contact: 'Kontakt',
         meal: 'Gericht',
         today: 'Heute',
+        showAll: 'alle anzeigen',
         mensaList: {
             title: 'Mensa Liste'
         },
@@ -102,6 +103,7 @@ const messages = {
         contact: 'Contact',
         meal: 'Meal',
         today: 'Today',
+        showAll: 'show all',
         mensaList: {
             title: 'Mensa List'
         },

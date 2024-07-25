@@ -47,7 +47,7 @@
 
     <div class="header-container">
       Mensen
-      <router-link to="/mensa-list">alle anzeigen</router-link>
+      <router-link to="/mensa-list">{{ t('showAll') }}</router-link>
     </div>
 
     <RouterLink v-for="mensa in firstThreeMensas" :key="mensa.id" :to="`/mensa/${mensa.id}`" class="mensen-container">
@@ -64,12 +64,11 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, onMounted, computed } from 'vue';
-import { Mensa } from '@/types/mensainterface';
+import {useI18n} from 'vue-i18n';
+import {computed, onMounted, ref} from 'vue';
+import {Mensa} from '@/types/mensainterface';
 import localforage from 'localforage';
-import { fetchMensas } from '@/services/mensaService';
-import { SMALL_BREAKPOINT, windowService } from '@/services/windowService';
+import {SMALL_BREAKPOINT, windowService} from '@/services/windowService';
 import LocationIcon from '@/assets/icons/LocationIcon.vue';
 import ChevronRightIcon from '@/assets/icons/ChevronRightIcon.vue';
 import {CANTEEN_DEBUG_DATA} from "@/types/tmpDataMensa";
