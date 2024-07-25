@@ -1,11 +1,12 @@
 /* __placeholder__ */
 import { useI18n } from 'vue-i18n';
 import { ref, onMounted, computed } from 'vue';
-import localforage from "localforage";
-import { fetchMensas } from "@/service/mensaService";
-import { SMALL_BREAKPOINT, windowService } from "@/service/windowService";
-import LocationIcon from '../assets/icons/LocationIcon.vue';
-import ChevronRightIcon from '../assets/icons/ChevronRightIcon.vue';
+import localforage from 'localforage';
+import { fetchMensas } from '@/service/mensaService';
+import { SMALL_BREAKPOINT, windowService } from '@/service/windowService';
+import LocationIcon from '@/assets/icons/LocationIcon.vue';
+import ChevronRightIcon from '@/assets/icons/ChevronRightIcon.vue';
+import { CANTEEN_DEBUG_DATA } from "@/types/tmpDataMensa";
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 const { t, locale } = useI18n();
 const location = ref(null);
@@ -13,6 +14,7 @@ const nearestMensa = ref(null);
 const mensas = ref([]);
 const distanceToNearestMensa = ref(null);
 const loading = ref(true);
+const error = ref(null);
 const { width } = windowService();
 const CACHE_KEY = 'mensaData';
 const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
@@ -33,8 +35,8 @@ const fetchMensasList = async () => {
         }
         loading.value = false;
     }
-    catch (error) {
-        console.error('Error fetching or saving mensas:', error);
+    catch (err) {
+        error.value = 'Error fetching or saving mensas';
         loading.value = false;
     }
 };
@@ -45,14 +47,13 @@ const getLocation = () => {
                 const { latitude, longitude } = position.coords;
                 location.value = `Latitude: ${latitude}, Longitude: ${longitude}`;
                 resolve({ latitude, longitude });
-            }, (error) => {
-                console.error('Error getting location:', error);
-                location.value = 'Unable to retrieve location';
-                reject(error);
+            }, (err) => {
+                error.value = 'Error getting location';
+                reject(err);
             });
         }
         else {
-            location.value = 'Geolocation is not supported by this browser.';
+            error.value = 'Geolocation is not supported by this browser.';
             reject(new Error('Geolocation is not supported by this browser.'));
         }
     });
@@ -85,25 +86,25 @@ const getDistance = (lat1, lng1, lat2, lng2) => {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c; // Distance in km
 };
-onMounted(async () => {
+const retryFetch = async () => {
+    error.value = null;
+    loading.value = true;
+    mensas.value = CANTEEN_DEBUG_DATA;
+    //await fetchMensasList();
     try {
-        const data = await localforage.getItem('mensaData');
-        if (data) {
-            mensas.value = data;
-            loading.value = false;
-        }
-        else {
-            await fetchMensasList();
-        }
         const userLocation = await getLocation();
         findNearestMensa(userLocation.latitude, userLocation.longitude);
     }
-    catch (error) {
-        console.error('Error fetching Mensas or getting location:', error);
+    catch (err) {
+        error.value = 'Error fetching location';
     }
+    loading.value = false;
+};
+onMounted(async () => {
+    await retryFetch();
 });
 const firstThreeMensas = computed(() => {
-    return mensas.value.slice(0, 4);
+    return mensas.value.slice(0, 3);
 });
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;
@@ -130,7 +131,23 @@ function __VLS_template() {
         (__VLS_ctx.t('discover'));
         // @ts-ignore
         [t,];
-        if (__VLS_ctx.nearestMensa) {
+        if (__VLS_ctx.loading) {
+            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("loading-state") }, });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
+            // @ts-ignore
+            [loading,];
+        }
+        if (__VLS_ctx.error) {
+            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("error-state") }, });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
+            (__VLS_ctx.error);
+            // @ts-ignore
+            [error, error,];
+            __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({ ...{ onClick: (__VLS_ctx.retryFetch) }, });
+            // @ts-ignore
+            [retryFetch,];
+        }
+        if (__VLS_ctx.nearestMensa && !__VLS_ctx.loading && !__VLS_ctx.error) {
             // @ts-ignore
             const __VLS_0 = {}
                 .RouterLink;
@@ -148,7 +165,7 @@ function __VLS_template() {
             __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
             (__VLS_ctx.t('nearest'));
             // @ts-ignore
-            [t, nearestMensa, nearestMensa,];
+            [t, loading, error, nearestMensa, nearestMensa,];
             __VLS_elementAsFunction(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({});
             (__VLS_ctx.nearestMensa.name);
             (__VLS_ctx.distanceToNearestMensa?.toFixed(2));
@@ -180,7 +197,23 @@ function __VLS_template() {
     }
     if (__VLS_ctx.width < __VLS_ctx.SMALL_BREAKPOINT) {
         __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("home-view") }, });
-        if (__VLS_ctx.nearestMensa) {
+        if (__VLS_ctx.loading) {
+            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("loading-state") }, });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
+            // @ts-ignore
+            [width, SMALL_BREAKPOINT, loading,];
+        }
+        if (__VLS_ctx.error) {
+            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("error-state") }, });
+            __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
+            (__VLS_ctx.error);
+            // @ts-ignore
+            [error, error,];
+            __VLS_elementAsFunction(__VLS_intrinsicElements.button, __VLS_intrinsicElements.button)({ ...{ onClick: (__VLS_ctx.retryFetch) }, });
+            // @ts-ignore
+            [retryFetch,];
+        }
+        if (__VLS_ctx.nearestMensa && !__VLS_ctx.loading && !__VLS_ctx.error) {
             // @ts-ignore
             const __VLS_16 = {}
                 .RouterLink;
@@ -198,7 +231,7 @@ function __VLS_template() {
             __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
             (__VLS_ctx.t('nearest'));
             // @ts-ignore
-            [width, SMALL_BREAKPOINT, t, nearestMensa, nearestMensa,];
+            [t, loading, error, nearestMensa, nearestMensa,];
             __VLS_elementAsFunction(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({});
             (__VLS_ctx.nearestMensa.name);
             (__VLS_ctx.distanceToNearestMensa?.toFixed(2));
@@ -245,7 +278,19 @@ function __VLS_template() {
         (__VLS_37.slots).default;
         const __VLS_37 = __VLS_pickFunctionalComponentCtx(__VLS_32, __VLS_34);
         for (const [mensa] of __VLS_getVForSourceType((__VLS_ctx.firstThreeMensas))) {
-            __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ key: ((mensa.id)), ...{ class: ("mensen-container") }, });
+            // @ts-ignore
+            const __VLS_38 = {}
+                .RouterLink;
+            ({}.RouterLink);
+            ({}.RouterLink);
+            __VLS_components.RouterLink;
+            __VLS_components.RouterLink;
+            // @ts-ignore
+            [RouterLink, RouterLink,];
+            // @ts-ignore
+            const __VLS_39 = __VLS_asFunctionalComponent(__VLS_38, new __VLS_38({ key: ((mensa.id)), to: ((`/mensa/${mensa.id}`)), ...{ class: ("mensen-container") }, }));
+            const __VLS_40 = __VLS_39({ key: ((mensa.id)), to: ((`/mensa/${mensa.id}`)), ...{ class: ("mensen-container") }, }, ...__VLS_functionalComponentArgsRest(__VLS_39));
+            ({}({ key: ((mensa.id)), to: ((`/mensa/${mensa.id}`)), ...{ class: ("mensen-container") }, }));
             __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("content-wrapper") }, });
             __VLS_elementAsFunction(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({});
             (mensa.name);
@@ -255,29 +300,35 @@ function __VLS_template() {
             // @ts-ignore
             [LocationIcon,];
             // @ts-ignore
-            const __VLS_38 = __VLS_asFunctionalComponent(LocationIcon, new LocationIcon({}));
-            const __VLS_39 = __VLS_38({}, ...__VLS_functionalComponentArgsRest(__VLS_38));
+            const __VLS_44 = __VLS_asFunctionalComponent(LocationIcon, new LocationIcon({}));
+            const __VLS_45 = __VLS_44({}, ...__VLS_functionalComponentArgsRest(__VLS_44));
             ({}({}));
-            const __VLS_42 = __VLS_pickFunctionalComponentCtx(LocationIcon, __VLS_39);
+            const __VLS_48 = __VLS_pickFunctionalComponentCtx(LocationIcon, __VLS_45);
             __VLS_elementAsFunction(__VLS_intrinsicElements.p, __VLS_intrinsicElements.p)({});
             (mensa.address.street);
             (mensa.address.city);
             // @ts-ignore
             [ChevronRightIcon,];
             // @ts-ignore
-            const __VLS_43 = __VLS_asFunctionalComponent(ChevronRightIcon, new ChevronRightIcon({}));
-            const __VLS_44 = __VLS_43({}, ...__VLS_functionalComponentArgsRest(__VLS_43));
+            const __VLS_49 = __VLS_asFunctionalComponent(ChevronRightIcon, new ChevronRightIcon({}));
+            const __VLS_50 = __VLS_49({}, ...__VLS_functionalComponentArgsRest(__VLS_49));
             ({}({}));
-            const __VLS_47 = __VLS_pickFunctionalComponentCtx(ChevronRightIcon, __VLS_44);
+            const __VLS_53 = __VLS_pickFunctionalComponentCtx(ChevronRightIcon, __VLS_50);
+            (__VLS_43.slots).default;
+            const __VLS_43 = __VLS_pickFunctionalComponentCtx(__VLS_38, __VLS_40);
         }
     }
     if (typeof __VLS_styleScopedClasses === 'object' && !Array.isArray(__VLS_styleScopedClasses)) {
         __VLS_styleScopedClasses['home-view'];
         __VLS_styleScopedClasses['heading-container'];
+        __VLS_styleScopedClasses['loading-state'];
+        __VLS_styleScopedClasses['error-state'];
         __VLS_styleScopedClasses['next-meal-container'];
         __VLS_styleScopedClasses['next-meal-content'];
         __VLS_styleScopedClasses['mensa-logo'];
         __VLS_styleScopedClasses['home-view'];
+        __VLS_styleScopedClasses['loading-state'];
+        __VLS_styleScopedClasses['error-state'];
         __VLS_styleScopedClasses['next-meal-container'];
         __VLS_styleScopedClasses['next-meal-content'];
         __VLS_styleScopedClasses['header-container'];
@@ -299,7 +350,10 @@ function __VLS_template() {
                 t: t,
                 nearestMensa: nearestMensa,
                 distanceToNearestMensa: distanceToNearestMensa,
+                loading: loading,
+                error: error,
                 width: width,
+                retryFetch: retryFetch,
                 firstThreeMensas: firstThreeMensas,
             };
         },

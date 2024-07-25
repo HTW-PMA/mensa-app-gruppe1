@@ -1,11 +1,10 @@
 /* __placeholder__ */
-import {onMounted, ref, watch} from 'vue';
-import {useI18n} from 'vue-i18n';
-import {favoriteDishes, favoriteMensas} from '../service/userSettings';
+import { ref, watch, onMounted } from 'vue';
+const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
+const { t, locale } = useI18n();
 import DEIcon from "@/assets/icons/DEIcon.vue";
 import ENIcon from "@/assets/icons/ENIcon.vue";
-
-const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
+import { useI18n } from "vue-i18n";
 // LocalStorage Schlüssel
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
 const FAVORITE_DISHES_KEY = 'favoriteDishes';
@@ -76,7 +75,6 @@ watch(favoriteDishes, (newValue) => {
 watch(notificationPreferences, (newValue) => {
     saveNotificationPreferences();
 }, { deep: true });
-const { t, locale } = useI18n();
 const changeLocale = (lang) => {
     locale.value = lang;
 };
@@ -205,15 +203,15 @@ function __VLS_template() {
     const __VLS_internalComponent = __VLS_defineComponent({
         setup() {
             return {
-                favoriteDishes: favoriteDishes,
-                favoriteMensas: favoriteMensas,
+                locale: locale,
                 DEIcon: DEIcon,
                 ENIcon: ENIcon,
+                favoriteMensas: favoriteMensas,
+                favoriteDishes: favoriteDishes,
                 notificationPreferences: notificationPreferences,
                 removeFavoriteDish: removeFavoriteDish,
                 removeFavoriteMensa: removeFavoriteMensa,
                 updateNotificationPreferences: updateNotificationPreferences,
-                locale: locale,
                 changeLocale: changeLocale,
             };
         },

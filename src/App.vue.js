@@ -1,9 +1,9 @@
 /* __placeholder__ */
 import { RouterLink, RouterView } from 'vue-router';
 import { SMALL_BREAKPOINT, windowService } from "@/service/windowService";
-import HomeIcon from './assets/icons/HomeIcon.vue';
-import ListIcon from './assets/icons/ListIcon.vue';
-import UserIcon from './assets/icons/UserIcon.vue';
+import HomeIcon from "@/assets/icons/HomeIcon.vue";
+import ListIcon from "@/assets/icons/ListIcon.vue";
+import UserIcon from "@/assets/icons/UserIcon.vue";
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 const { width } = windowService();
 const __VLS_fnComponent = (await import('vue')).defineComponent({});

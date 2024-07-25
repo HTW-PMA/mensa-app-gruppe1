@@ -60,7 +60,6 @@
 import {ref, watch, onMounted} from 'vue';
 
 const {t, locale} = useI18n();
-import {favoriteDishes, favoriteMensas} from "@/service/userSettings";
 import DEIcon from "@/assets/icons/DEIcon.vue";
 import ENIcon from "@/assets/icons/ENIcon.vue";
 import {useI18n} from "vue-i18n";

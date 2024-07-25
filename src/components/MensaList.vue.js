@@ -2,17 +2,17 @@
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import localforage from 'localforage';
-import LocationIcon from '../assets/icons/LocationIcon.vue';
-import ClockIcon from '../assets/icons/ClockIcon.vue';
-import PhoneIcon from '../assets/icons/PhoneIcon.vue';
-import MailIcon from '../assets/icons/MailIcon.vue';
-import RatingIcon from '../assets/icons/RatingIcon.vue';
-import ChevronRightIcon from '../assets/icons/ChevronRightIcon.vue';
+import LocationIcon from "@/assets/icons/LocationIcon.vue";
+import ClockIcon from "@/assets/icons/ClockIcon.vue";
+import PhoneIcon from "@/assets/icons/PhoneIcon.vue";
+import MailIcon from "@/assets/icons/MailIcon.vue";
+import ChevronRightIcon from "@/assets/icons/ChevronRightIcon.vue";
+import { CANTEEN_DEBUG_DATA } from "@/types/tmpDataMensa";
 const { defineProps, defineSlots, defineEmits, defineExpose, defineModel, defineOptions, withDefaults, } = await import('vue');
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
 const favoriteMensas = ref([]);
 const { t, locale } = useI18n();
-const mensas = ref([]);
+const mensas = ref(CANTEEN_DEBUG_DATA);
 const loading = ref(true);
 const filters = ref({
     search: '',
@@ -103,21 +103,6 @@ const isFavorite = (mensa) => {
     return favoriteMensas.value.some(fav => fav.id === mensa.id);
 };
 onMounted(async () => {
-    try {
-        const data = await localforage.getItem('mensaData');
-        if (data) {
-            mensas.value = data;
-            loading.value = false;
-            console.log(data);
-        }
-        else {
-            await fetchMensasList();
-        }
-    }
-    catch (error) {
-        console.error('Error fetching mensas from IndexedDB or API:', error);
-        await fetchMensasList();
-    }
 });
 const __VLS_fnComponent = (await import('vue')).defineComponent({});
 let __VLS_functionalComponentProps;
@@ -150,9 +135,8 @@ function __VLS_template() {
     [t, applyFilters, filters,];
     if (__VLS_ctx.loading) {
         __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("loading-spinner") }, });
-        (__VLS_ctx.t('loading'));
         // @ts-ignore
-        [t, loading,];
+        [loading,];
     }
     __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("mensa-item-container") }, });
     for (const [mensa] of __VLS_getVForSourceType((__VLS_ctx.filteredMensas))) {
@@ -236,23 +220,14 @@ function __VLS_template() {
         ({}({}));
         const __VLS_25 = __VLS_pickFunctionalComponentCtx(MailIcon, __VLS_22);
         (mensa.contactInfo.email);
-        __VLS_elementAsFunction(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({ ...{ class: ("mensa-content-item") }, });
-        // @ts-ignore
-        [RatingIcon,];
-        // @ts-ignore
-        const __VLS_26 = __VLS_asFunctionalComponent(RatingIcon, new RatingIcon({}));
-        const __VLS_27 = __VLS_26({}, ...__VLS_functionalComponentArgsRest(__VLS_26));
-        ({}({}));
-        const __VLS_30 = __VLS_pickFunctionalComponentCtx(RatingIcon, __VLS_27);
-        (mensa.canteenReviews);
         __VLS_elementAsFunction(__VLS_intrinsicElements.a, __VLS_intrinsicElements.a)({});
         // @ts-ignore
         [ChevronRightIcon,];
         // @ts-ignore
-        const __VLS_31 = __VLS_asFunctionalComponent(ChevronRightIcon, new ChevronRightIcon({}));
-        const __VLS_32 = __VLS_31({}, ...__VLS_functionalComponentArgsRest(__VLS_31));
+        const __VLS_26 = __VLS_asFunctionalComponent(ChevronRightIcon, new ChevronRightIcon({}));
+        const __VLS_27 = __VLS_26({}, ...__VLS_functionalComponentArgsRest(__VLS_26));
         ({}({}));
-        const __VLS_35 = __VLS_pickFunctionalComponentCtx(ChevronRightIcon, __VLS_32);
+        const __VLS_30 = __VLS_pickFunctionalComponentCtx(ChevronRightIcon, __VLS_27);
         (__VLS_5.slots).default;
         const __VLS_5 = __VLS_pickFunctionalComponentCtx(__VLS_0, __VLS_2);
     }
@@ -275,7 +250,6 @@ function __VLS_template() {
         __VLS_styleScopedClasses['address-container'];
         __VLS_styleScopedClasses['mensa-content-item'];
         __VLS_styleScopedClasses['contact-info'];
-        __VLS_styleScopedClasses['mensa-content-item'];
     }
     var __VLS_slots;
     return __VLS_slots;
@@ -289,7 +263,6 @@ function __VLS_template() {
                 ClockIcon: ClockIcon,
                 PhoneIcon: PhoneIcon,
                 MailIcon: MailIcon,
-                RatingIcon: RatingIcon,
                 ChevronRightIcon: ChevronRightIcon,
                 t: t,
                 mensas: mensas,
