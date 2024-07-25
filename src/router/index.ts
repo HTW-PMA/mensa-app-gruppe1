@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../components/HomeView.vue';
 import MensaList from '../components/MensaList.vue';
-import GerichtList from '../components/GerichtList.vue';
 import AboutUs from '../components/AboutUs.vue';
 import UserSettings from '../components/UserSettings.vue';
 import MensaDetail from "@/components/MensaDetail.vue";
@@ -30,11 +29,6 @@ const router = createRouter({
       name: 'mensa-detail',
       component: MensaDetail,
       props: true
-    },
-    {
-      path: '/gericht-list',
-      name: 'gericht-list',
-      component: GerichtList
     },
     {
       path: '/settings',

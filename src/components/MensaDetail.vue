@@ -62,9 +62,9 @@
     </div>
     <div v-if="menue && !loading && !error" class="menue-container">
       <div class="menue-heading">
-        <h3>Speiseplan für Heute</h3>
+        <h3>Speiseplan</h3>
         <div class="col-md-6 mb-3">
-          <label for="date-select" class="form-label">Wähle Datum: </label>
+          <label for="date-select" class="form-label">Wähle ein Datum: </label>
           <input type="date" id="date-select" v-model="selectedDate" @change="fetchMenue"
                  class="form-control"/>
         </div>
@@ -120,11 +120,10 @@
 
 
 <script setup lang="ts">
-import {onMounted, ref, computed} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import {useRoute} from 'vue-router';
 import {Mensa} from '@/types/mensainterface';
-import {fetchMensaById} from '@/service/mensaService';
-import {fetchMenueByMensaId} from '@/service/menueService';
+import {fetchMenueByMensaId} from '@/services/menueService';
 import {Meal, MenueResponse} from '@/types/menueInterface';
 import LocationIcon from "@/assets/icons/LocationIcon.vue";
 import ClockIcon from "@/assets/icons/ClockIcon.vue";
@@ -142,23 +141,14 @@ const error = ref<string | null>(null);
 const selectedDate = ref<string>(new Date().toISOString().split('T')[0]);
 
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
-const FAVORITE_DISHES_KEY = 'favoriteDishes';
+const FAVORITE_DISHES_KEY = 'favoriteMeals';
 const favoriteMensas = ref<Mensa[]>([]);
-const favoriteDishes = ref<Meal[]>([]);
-
-const fetchMensaDetail = async () => {
-  try {
-    mensa.value = await fetchMensaById(route.params.id as string);
-  } catch (err) {
-    error.value = 'Error fetching mensa details';
-  }
-};
+const favoriteMeals = ref<Meal[]>([]);
 
 const fetchMenue = async () => {
   try {
     const today = new Date().toISOString().split('T')[0];
     menue.value = await fetchMenueByMensaId(route.params.id as string, selectedDate.value, selectedDate.value);
-    console.log("data changed ")
   } catch (err) {
     error.value = 'Error fetching menue details';
   }
@@ -169,7 +159,7 @@ const isMensaBookmarked = computed(() => {
 });
 
 const isMealBookmarked = (meal: Meal) => {
-  return meal ? favoriteDishes.value.some(favMeal => favMeal.ID === meal.ID) : false;
+  return meal ? favoriteMeals.value.some(favMeal => favMeal.ID === meal.ID) : false;
 };
 
 const handleMensaBookmark = () => {
@@ -187,13 +177,13 @@ const handleMensaBookmark = () => {
 const handleMealBookmark = (meal: Meal) => {
   if (!meal) return;
 
-  const index = favoriteDishes.value.findIndex(favMeal => favMeal.ID === meal.ID);
+  const index = favoriteMeals.value.findIndex(favMeal => favMeal.ID === meal.ID);
   if (index === -1) {
-    favoriteDishes.value.push(meal);
+    favoriteMeals.value.push(meal);
   } else {
-    favoriteDishes.value.splice(index, 1);
+    favoriteMeals.value.splice(index, 1);
   }
-  saveFavoriteDishes();
+  saveFavoriteMeals();
 };
 
 const loadFavoriteMensas = () => {
@@ -210,18 +200,18 @@ const saveFavoriteMensas = () => {
 };
 
 // Lade die Favoriten aus localStorage
-const loadFavoriteDishes = () => {
+const loadFavoriteMeals = () => {
   const storedFavorites = localStorage.getItem(FAVORITE_DISHES_KEY);
   if (storedFavorites) {
-    favoriteDishes.value = JSON.parse(storedFavorites);
+    favoriteMeals.value = JSON.parse(storedFavorites);
   } else {
-    favoriteDishes.value = [];
+    favoriteMeals.value = [];
   }
 };
 
 // Speichere die Favoriten in localStorage
-const saveFavoriteDishes = () => {
-  localStorage.setItem(FAVORITE_DISHES_KEY, JSON.stringify(favoriteDishes.value));
+const saveFavoriteMeals = () => {
+  localStorage.setItem(FAVORITE_DISHES_KEY, JSON.stringify(favoriteMeals.value));
 };
 
 const fetchData = async () => {
@@ -234,7 +224,7 @@ const fetchData = async () => {
 
 onMounted(async () => {
   loadFavoriteMensas();
-  loadFavoriteDishes();
+  loadFavoriteMeals();
   await fetchData();
 });
 
@@ -310,9 +300,6 @@ onMounted(async () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-
-      input {
-      }
     }
 
     .meal-container {
@@ -329,6 +316,7 @@ onMounted(async () => {
         button {
           width: 50px;
           height: 50px;
+          cursor: pointer;
         }
       }
 

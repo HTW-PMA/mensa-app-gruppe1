@@ -19,7 +19,6 @@ export async function fetchMeal(apiKey: string, params: Record<string, string> =
     }
 
     const data: Meal[] = await response.json();
-    console.log('Fetched meals data:', data);
     return data;
   } catch (error) {
     console.error('Error fetching meals:', error);

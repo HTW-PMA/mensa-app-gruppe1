@@ -27,11 +27,6 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
   // Weitere Schritte im Aktivierungslebenszyklus ausführen
 });
 
-// Auf ein "fetch" Event warten
-self.addEventListener('fetch', (event: FetchEvent) => {
-  console.log(`Service Worker: Fetch resource ${event.request.url}`, event);
-  // Weitere Schritte im Aktivierungslebenszyklus ausführen
-});
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

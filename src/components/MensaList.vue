@@ -82,7 +82,11 @@ const favoriteMensas = ref<Mensa[]>([]);
 
 const {t, locale} = useI18n();
 
-const mensas = ref<Mensa[]>(CANTEEN_DEBUG_DATA);
+const CACHE_KEY = 'mensaData';
+const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
+const CACHE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 Tage
+
+const mensas = ref<Mensa[]>([]);
 const loading = ref<boolean>(true);
 const filters = ref({
   search: '',
@@ -96,39 +100,17 @@ const applyFilters = () => {
   });
 };
 
-// Lade die Favoriten aus localStorage
-const loadFavoriteMensas = () => {
-  const storedFavorites = localStorage.getItem(FAVORITE_MENSA_KEY);
-  if (storedFavorites) {
-    favoriteMensas.value = JSON.parse(storedFavorites);
-  } else {
-    favoriteMensas.value = [];
-  }
-};
-
-// Speichere die Favoriten in localStorage
-const saveFavoriteMensas = () => {
-  localStorage.setItem(FAVORITE_MENSA_KEY, JSON.stringify(favoriteMensas.value));
-};
-
-const CACHE_KEY = 'mensaData';
-const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
-const CACHE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 Tage
-
 const fetchMensasList = async () => {
-  loadFavoriteMensas();
   try {
     const cachedData = await localforage.getItem<Mensa[]>(CACHE_KEY);
     const cachedTimestamp = await localforage.getItem<number>(CACHE_TIMESTAMP_KEY);
     const now = Date.now();
 
-    console.log('Cached data:', cachedData);
-    console.log('Cached timestamp:', cachedTimestamp);
-    console.log('Current time:', now);
-
     if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
       mensas.value = cachedData;
     } else {
+      mensas.value = CANTEEN_DEBUG_DATA;
+      await localforage.setItem(CACHE_KEY, mensas);
       await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
     }
     loading.value = false;
@@ -169,22 +151,23 @@ const getCurrentDayHours = (mensa: Mensa) => {
   return currentDay ? currentDay.businessHours : null;
 };
 
-const toggleFavoriteMensa = (mensa: Mensa) => {
-  const index = favoriteMensas.value.findIndex(fav => fav.id === mensa.id);
-  if (index !== -1) {
-    favoriteMensas.value.splice(index, 1);
-  } else {
-    favoriteMensas.value.push(mensa);
-  }
-  saveFavoriteMensas();
-};
-
-const isFavorite = (mensa: Mensa) => {
-  return favoriteMensas.value.some(fav => fav.id === mensa.id);
-};
-
 onMounted(async () => {
+  applyFilters();
 
+  try {
+    loading.value = true;
+
+    const data = await localforage.getItem<Mensa[]>('mensaData');
+    if (data) {
+      mensas.value = data;
+      loading.value = false;
+
+    } else {
+      await fetchMensasList();
+    }
+  } catch (error) {
+    console.error('Error fetching mensas from IndexedDB or API:', error);
+  }
 });
 </script>
 

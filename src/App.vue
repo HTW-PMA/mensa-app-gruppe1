@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router';
-import {SMALL_BREAKPOINT, windowService} from "@/service/windowService";
+import {SMALL_BREAKPOINT, windowService} from "@/services/windowService";
 import HomeIcon from "@/assets/icons/HomeIcon.vue";
 import ListIcon from "@/assets/icons/ListIcon.vue";
 import UserIcon from "@/assets/icons/UserIcon.vue";
