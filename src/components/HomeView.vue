@@ -87,26 +87,6 @@ const CACHE_KEY = 'mensaData';
 const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
 const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 Stunden
 
-const fetchMensasList = async () => {
-  try {
-    const cachedData = await localforage.getItem<Mensa[]>(CACHE_KEY);
-    const cachedTimestamp = await localforage.getItem<number>(CACHE_TIMESTAMP_KEY);
-    const now = Date.now();
-
-    if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
-      mensas.value = cachedData;
-    } else {
-      const data = await fetchMensas();
-      mensas.value = data;
-      await localforage.setItem(CACHE_KEY, data);
-      await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
-    }
-    loading.value = false;
-  } catch (err) {
-    error.value = 'Error fetching or saving mensas';
-    loading.value = false;
-  }
-};
 
 const getLocation = () => {
   return new Promise<{ latitude: number; longitude: number }>((resolve, reject) => {
@@ -172,15 +152,13 @@ const fetchData = async () => {
     if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
       mensas.value = cachedData;
     } else {
-      const data = CANTEEN_DEBUG_DATA;
-      mensas.value = data;
-      await localforage.setItem(CACHE_KEY, data);
+      mensas.value = CANTEEN_DEBUG_DATA;
+      await localforage.setItem(CACHE_KEY, CANTEEN_DEBUG_DATA);
       await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
     }
     loading.value = false;
-  } catch (err) {
-    error.value = 'Error fetching or saving mensas';
-    loading.value = false;
+  } catch (error) {
+    console.error('Error getting Data:', error);
   }
 
   try {

@@ -5,8 +5,8 @@
     </div>
 
     <div class="filters-container">
-      <input v-model="filters.search" @input="applyFilters" :placeholder="t('Name, PLZ, Bezirk')"/>
-      <input v-model="filters.openAt" @input="applyFilters" :placeholder="t('filters.filterOpenAt')" type="time"/>
+      <input v-model="filters.search" @input="applyFilters" :placeholder="t('filters.filterName')" />
+      <input v-model="filters.openAt" @input="applyFilters" :placeholder="t('filters.filterOpenAt')" type="time" />
     </div>
 
     <div v-if="loading" class="loading-spinner"></div>
@@ -17,20 +17,20 @@
           <h2>{{ mensa.name }}</h2>
           <div class="mensa-content-container">
             <div class="mensa-content-item">
-              <LocationIcon/>
+              <LocationIcon />
               <div class="address-container">
-                <strong> Adresse</strong>
-                {{ mensa.address.street }}, <br>
+                <strong>{{ t('mensaDetails.address') }}</strong>
+                {{ mensa.address.street }}, <br />
                 {{ mensa.address.zipcode }} {{ mensa.address.city }}
               </div>
             </div>
 
             <div class="mensa-content-item">
-              <ClockIcon/>
+              <ClockIcon />
               <div v-if="getCurrentDayHours(mensa)">
-                <strong> Heute:</strong>
+                <strong>{{ t('today') }}:</strong>
                 <div v-for="hour in getCurrentDayHours(mensa)" :key="hour.openAt">
-                  {{ hour.businessHourType }}: {{ hour.openAt }} - {{ hour.closeAt }}
+                  {{ t(`mensaDetails.businessHourType.${hour.businessHourType}`) }}: {{ hour.openAt }} - {{ hour.closeAt }}
                 </div>
               </div>
               <div v-else>
@@ -40,24 +40,22 @@
 
             <div class="contact-info">
               <div>
-                <PhoneIcon/>
+                <PhoneIcon />
                 {{ mensa.contactInfo.phone }}
               </div>
               <div>
-                <MailIcon/>
+                <MailIcon />
                 {{ mensa.contactInfo.email }}
               </div>
-
             </div>
           </div>
         </div>
 
         <a>
-          <ChevronRightIcon/>
+          <ChevronRightIcon />
         </a>
       </RouterLink>
     </div>
-
 
     <p v-if="mensas.length === 0">
       {{ t('noMensasFound') }}
@@ -110,18 +108,12 @@ const fetchMensasList = async () => {
       mensas.value = cachedData;
     } else {
       mensas.value = CANTEEN_DEBUG_DATA;
-      await localforage.setItem(CACHE_KEY, mensas);
+      await localforage.setItem(CACHE_KEY, CANTEEN_DEBUG_DATA);
       await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
     }
     loading.value = false;
-  } catch (apiError) {
-    console.error('Error fetching from API, trying to fetch from localforage cache:', apiError);
-    try {
-      loading.value = false;
-    } catch (localforageError) {
-      console.error('Error fetching from localforage:', localforageError);
-      loading.value = false;
-    }
+  } catch (error) {
+    console.error('Error getting Data:', error);
   }
 };
 

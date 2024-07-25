@@ -1,47 +1,47 @@
 <template>
   <div class="user-settings-container">
-    <h2>Nutzereinstellungen</h2>
+    <h2>{{ t('userSettings.title') }}</h2>
 
     <div>
-      <label>Lieblings-Mensen:</label>
+      <label>{{ t('userSettings.favoriteMensas') }}:</label>
       <ul v-if="favoriteMensas.length > 0">
         <li v-for="(mensa, index) in favoriteMensas" :key="index">
           {{ mensa.name }}
-          <button @click="removeFavoriteMensa(index)">Entfernen</button>
+          <button @click="removeFavoriteMensa(index)">{{ t('userSettings.remove') }}</button>
         </li>
       </ul>
-      <p v-if="favoriteMensas.length === 0">Noch keine Mensa favorisiert</p>
+      <p v-if="favoriteMensas.length === 0">{{ t('userSettings.noFavoriteMensa') }}</p>
     </div>
 
     <div>
-      <label>Lieblingsspeisen:</label>
+      <label>{{ t('userSettings.favoriteMeals') }}:</label>
       <ul v-if="favoriteMeals.length > 0">
         <li v-for="(dish, index) in favoriteMeals" :key="index">
           {{ dish.name }}
-          <button @click="removeFavoriteDish(index)">Entfernen</button>
+          <button @click="removeFavoriteDish(index)">{{ t('userSettings.remove') }}</button>
         </li>
       </ul>
-      <p v-if="favoriteMeals.length === 0">Noch keine Speise favorisiert</p>
+      <p v-if="favoriteMeals.length === 0">{{ t('userSettings.noFavoriteMeal') }}</p>
     </div>
 
     <div>
-      <label>Benachrichtigungseinstellungen:</label>
+      <label>{{ t('userSettings.notificationSettings') }}:</label>
       <div>
         <input type="checkbox" v-model="notificationPreferences.daily" @change="updateNotificationPreferences"/>
-        Tägliche Benachrichtigungen
+        {{ t('userSettings.dailyNotifications') }}
       </div>
       <div>
         <input type="checkbox" v-model="notificationPreferences.newMeals" @change="updateNotificationPreferences"/>
-        Benachrichtigungen über neue Gerichte
+        {{ t('userSettings.newMealsNotifications') }}
       </div>
       <div>
         <input type="checkbox" v-model="notificationPreferences.offers" @change="updateNotificationPreferences"/>
-        Benachrichtigungen über Angebote
+        {{ t('userSettings.offersNotifications') }}
       </div>
     </div>
 
     <div class="language-container">
-      <label>Sprache:</label>
+      <label>{{ t('userSettings.language') }}:</label>
 
       <div class="btn-container">
         <button :class="{ 'active-button': locale === 'en' }" @click="changeLocale('en')">
@@ -58,19 +58,19 @@
 
 <script setup lang="ts">
 import {ref, watch, onMounted} from 'vue';
-
-const {t, locale} = useI18n();
+import {useI18n} from "vue-i18n";
 import DEIcon from "@/assets/icons/DEIcon.vue";
 import ENIcon from "@/assets/icons/ENIcon.vue";
-import {useI18n} from "vue-i18n";
 import {Meal} from "@/types/menueInterface";
 
-// LocalStorage Schlüssel
+const {t, locale} = useI18n();
+
+// LocalStorage keys
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
 const FAVORITE_DISHES_KEY = 'favoriteMeals';
 const NOTIFICATION_PREFERENCES_KEY = 'notificationPreferences';
 
-// Reactive Variablen
+// Reactive variables
 const favoriteMensas = ref<any[]>([]);
 const favoriteMeals = ref<Meal[]>([]);
 const notificationPreferences = ref({
@@ -79,7 +79,7 @@ const notificationPreferences = ref({
   offers: false
 });
 
-// Lade Einstellungen aus LocalStorage
+// Load settings from LocalStorage
 const loadSettings = () => {
   const savedFavoriteMensas = localStorage.getItem(FAVORITE_MENSA_KEY);
   if (savedFavoriteMensas) {
@@ -95,44 +95,44 @@ const loadSettings = () => {
   }
 };
 
-// Funktion zum Entfernen einer Lieblingsspeise
+// Function to remove a favorite dish
 const removeFavoriteDish = (index: number) => {
   favoriteMeals.value.splice(index, 1);
 };
 
-// Funktion zum Entfernen einer Lieblings-Mensa
+// Function to remove a favorite mensa
 const removeFavoriteMensa = (index: number) => {
   favoriteMensas.value.splice(index, 1);
 };
 
-// Funktion zum Aktualisieren der Benachrichtigungseinstellungen
+// Function to update notification preferences
 const updateNotificationPreferences = () => {
   if (Notification.permission === 'default' || Notification.permission === 'denied') {
     Notification.requestPermission().then(permission => {
       if (permission === 'granted') {
         saveNotificationPreferences();
-        showNotification('Benachrichtigungen aktiviert', 'Sie erhalten nun Benachrichtigungen gemäß Ihren Einstellungen.');
+        showNotification(t('notifications.enabledTitle'), t('notifications.enabledBody'));
       }
     });
   } else {
     saveNotificationPreferences();
-    showNotification('Benachrichtigungen aktualisiert', 'Ihre Benachrichtigungseinstellungen wurden aktualisiert.');
+    showNotification(t('notifications.updatedTitle'), t('notifications.updatedBody'));
   }
 };
 
-// Funktion zum Speichern der Benachrichtigungseinstellungen
+// Function to save notification preferences
 const saveNotificationPreferences = () => {
   localStorage.setItem(NOTIFICATION_PREFERENCES_KEY, JSON.stringify(notificationPreferences.value));
 };
 
-// Funktion zum Anzeigen einer Benachrichtigung
+// Function to show a notification
 const showNotification = (title: string, body: string) => {
   if (Notification.permission === 'granted') {
     new Notification(title, {body});
   }
 };
 
-// Watch und Update localStorage, wenn Änderungen auftreten
+// Watch and update localStorage when changes occur
 watch(favoriteMensas, (newValue) => {
   localStorage.setItem(FAVORITE_MENSA_KEY, JSON.stringify(newValue));
 }, {deep: true});
@@ -149,22 +149,19 @@ const changeLocale = (lang: 'en' | 'de') => {
   locale.value = lang;
 };
 
-// Einstellungen beim Komponent-Mount laden
+// Load settings on component mount
 onMounted(() => {
   loadSettings();
 });
-
 </script>
 
 <style scoped>
 
 .user-settings-container {
   padding: 0 2rem;
-
 }
 
 .language-container {
-
   .btn-container {
     display: flex;
     gap: 1rem;
@@ -179,7 +176,6 @@ onMounted(() => {
       background-color: #a2a2a2; /* Highlighted background color for the active button */
     }
   }
-
 }
 
 h2 {

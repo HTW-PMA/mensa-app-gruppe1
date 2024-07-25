@@ -108,17 +108,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.06Z",
         "id": "655ff176136d3b580c970f9d",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -231,17 +220,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.061Z",
         "id": "655ff176136d3b580c970fa2",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -328,17 +306,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.062Z",
         "id": "655ff176136d3b580c970f9c",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -451,17 +418,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.064Z",
         "id": "655ff176136d3b580c970f9d",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -573,17 +529,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.065Z",
         "id": "655ff176136d3b580c970f9e",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -671,17 +616,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.066Z",
         "id": "655ff176136d3b580c970fa0",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -769,17 +703,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.067Z",
         "id": "655ff176136d3b580c970fa1",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": [],
     },
     {
@@ -893,17 +816,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.026Z",
         "id": "655ff175136d3b580c970f80",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -990,17 +902,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.059Z",
         "id": "6375f3112e6cbe73bac78a86",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -1112,17 +1013,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.005Z",
         "id": "655ff175136d3b580c970f7b",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -1234,17 +1124,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.019Z",
         "id": "655ff175136d3b580c970f7d",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -1334,17 +1213,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.016Z",
         "id": "655ff175136d3b580c970f7c",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -1456,17 +1324,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.051Z",
         "id": "655ff175136d3b580c970f91",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -1578,17 +1435,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.055Z",
         "id": "655ff176136d3b580c970f95",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -1677,17 +1523,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.031Z",
         "id": "655ff175136d3b580c970f83",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -1775,17 +1610,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.05Z",
         "id": "6655ff175136d3b580c970f90",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -1872,17 +1696,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.022Z",
         "id": "655ff175136d3b580c970f7e",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -1970,17 +1783,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.049Z",
         "id": "655ff175136d3b580c970f85",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -2067,17 +1869,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "655ff176136d3b580c970f97",
         "id": "6375f3112e6cbe73bac78a90",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -2191,17 +1982,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.034Z",
         "id": "655ff176136d3b580c970f99",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -2313,17 +2093,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.068Z",
         "id": "655ff176136d3b580c970fa2",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -2435,17 +2204,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.037Z",
         "id": "655ff175136d3b580c970f88",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -2582,17 +2340,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.038Z",
         "id": "655ff175136d3b580c970f8a",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -2704,17 +2451,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.04Z",
         "id": "655ff175136d3b580c970f8b",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -2801,17 +2537,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.041Z",
         "id": "655ff175136d3b580c970f8c",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -2923,17 +2648,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.042Z",
         "id": "655ff175136d3b580c970f8d",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -2990,17 +2704,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.044Z",
         "id": "655ff175136d3b580c970f8f",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3112,17 +2815,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.053Z",
         "id": "655ff175136d3b580c970f93",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3237,17 +2929,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.028Z",
         "id": "655ff175136d3b580c970f81",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3359,17 +3040,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.056Z",
         "id": "655ff176136d3b580c970f96",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3456,17 +3126,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.043Z",
         "id": "655ff175136d3b580c970f89",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3553,17 +3212,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.054Z",
         "id": "655ff175136d3b580c970f94",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3620,17 +3268,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.025Z",
         "id": "655ff175136d3b580c970f7f",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3687,17 +3324,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.047Z",
         "id": "655ff175136d3b580c970f90",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3784,17 +3410,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.046Z",
         "id": "655ff175136d3b580c970f8e",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3907,17 +3522,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.029Z",
         "id": "655ff175136d3b580c970f82",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -3975,17 +3579,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.032Z",
         "id": "655ff175136d3b580c970f84",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -4042,17 +3635,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.036Z",
         "id": "655ff175136d3b580c970f87",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     },
     {
@@ -4109,17 +3691,6 @@ export const CANTEEN_DEBUG_DATA = [
         ],
         "lastUpdated": "2023-06-11T00:02:11.035Z",
         "id": "655ff175136d3b580c970f86",
-        "img": {
-            "lastModified": 0,
-            "name": "",
-            "webkitRelativePath": "",
-            "size": 0,
-            "type": "",
-            "arrayBuffer": async () => new ArrayBuffer(0),
-            "slice": () => new Blob(),
-            "stream": () => new ReadableStream(),
-            "text": async () => ""
-        },
         "canteenReviews": []
     }
 ]

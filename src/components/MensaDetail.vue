@@ -1,11 +1,11 @@
 <template>
   <div class="mensa-detail-container">
     <div v-if="loading" class="loading-state">
-      <p>Loading...</p>
+      <p>{{ t('loading') }}</p>
     </div>
     <div v-if="error" class="error-state">
-      <p>Error loading data: {{ error }}</p>
-      <button @click="fetchData">Erneut versuchen</button>
+      <p>{{ t('errorLoadingData') }}: {{ error }}</p>
+      <button @click="fetchData">{{ t('tryAgain') }}</button>
     </div>
     <div v-if="mensa && !loading && !error" class="mensa-details">
       <div class="heading">
@@ -23,7 +23,7 @@
       <div class="mensa-details-content">
         <LocationIcon/>
         <div class="address-container">
-          <strong>Adresse</strong>
+          <strong>{{ t('mensaDetails.address') }}</strong>
           {{ mensa.address.street }}, <br/>
           {{ mensa.address.zipcode }} {{ mensa.address.city }}
         </div>
@@ -31,7 +31,7 @@
       <div class="mensa-details-content">
         <ClockIcon/>
         <div class="address-container">
-          <strong>Öffnungszeiten</strong>
+          <strong>{{ t('mensaDetails.openingHours') }}</strong>
           <div
               v-for="openTime in mensa.businessDays"
               :key="openTime.day"
@@ -45,7 +45,7 @@
             >
               {{ times.businessHourType }}: {{ times.openAt }} - {{ times.closeAt }}
             </div>
-            <div v-if="openTime.businessHours.length === 0">Geschlossen</div>
+            <div v-if="openTime.businessHours.length === 0">{{ t('closed') }}</div>
           </div>
         </div>
       </div>
@@ -62,15 +62,15 @@
     </div>
     <div v-if="menue && !loading && !error" class="menue-container">
       <div class="menue-heading">
-        <h3>Speiseplan</h3>
+        <h3>{{ t('menue') }}</h3>
         <div class="col-md-6 mb-3">
-          <label for="date-select" class="form-label">Wähle ein Datum: </label>
+          <label for="date-select" class="form-label">{{ t('date.select') }}: </label>
           <input type="date" id="date-select" v-model="selectedDate" @change="fetchMenue"
                  class="form-control"/>
         </div>
       </div>
 
-      <div v-if="menue.meals.length === 0">Heute keine Speisen</div>
+      <div v-if="menue.meals.length === 0">{{ t('noSpeisen') }}</div>
       <div v-for="meal in menue.meals" :key="meal.ID" class="meal-container">
         <div class="meal-heading">
           <h4>{{ meal.name }}</h4>
@@ -86,38 +86,37 @@
 
         <div class="meal-details">
           <div>
-            <strong>Kategorie:</strong> {{ meal.category }}
+            <strong>{{ t('mealDetails.category') }}:</strong> {{ meal.category }}
           </div>
           <div>
-            <strong>Preise:</strong>
+            <strong>{{ t('mealDetails.prices') }}:</strong>
             <ul>
               <li v-for="price in meal.prices" :key="price.priceType">{{ price.priceType }}: {{ price.price }}€</li>
             </ul>
           </div>
           <div>
-            <strong>Zusätze:</strong>
+            <strong>{{ t('mealDetails.additives') }}:</strong>
             <ul>
               <li v-for="additive in meal.additives" :key="additive.ID">{{ additive.text }}</li>
             </ul>
           </div>
           <div>
-            <strong>Badges:</strong>
+            <strong>{{ t('mealDetails.badges') }}:</strong>
             <ul>
               <li v-for="badge in meal.badges" :key="badge.ID">{{ badge.name }} - {{ badge.description }}</li>
             </ul>
           </div>
           <div>
-            <strong>Wasserbilanz:</strong> {{ meal.waterBilanz }} L
+            <strong>{{ t('mealDetails.waterBilanz') }}:</strong> {{ meal.waterBilanz }} L
           </div>
           <div>
-            <strong>CO2-Bilanz:</strong> {{ meal.co2Bilanz }} kg
+            <strong>{{ t('mealDetails.co2Bilanz') }}:</strong> {{ meal.co2Bilanz }} kg
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 
 <script setup lang="ts">
 import {computed, onMounted, ref} from 'vue';
@@ -132,9 +131,13 @@ import PhoneIcon from "@/assets/icons/PhoneIcon.vue";
 import BookmarkIcon from "@/assets/icons/BookmarkIcon.vue";
 import UnBookmarkIcon from "@/assets/icons/UnBookmarkIcon.vue";
 import {CANTEEN_DEBUG_DATA} from "@/types/tmpDataMensa";
+import localforage from "localforage";
+import {useI18n} from "vue-i18n";
+const { t, locale } = useI18n();
+
 
 const route = useRoute();
-const mensa = ref<Mensa | null>(null);
+const mensa = ref<Mensa | undefined>(undefined);
 const menue = ref<MenueResponse | null>(null);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
@@ -144,6 +147,10 @@ const FAVORITE_MENSA_KEY = 'favoriteMensas';
 const FAVORITE_DISHES_KEY = 'favoriteMeals';
 const favoriteMensas = ref<Mensa[]>([]);
 const favoriteMeals = ref<Meal[]>([]);
+
+const CACHE_KEY = 'mensaData';
+const CACHE_TIMESTAMP_KEY = 'mensaDataTimestamp';
+const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 Stunden
 
 const fetchMenue = async () => {
   try {
@@ -217,7 +224,24 @@ const saveFavoriteMeals = () => {
 const fetchData = async () => {
   error.value = null;
   loading.value = true;
-  mensa.value = CANTEEN_DEBUG_DATA.find(canteen => canteen.id === route.params.id as string) || null;
+
+  try {
+    const cachedData = await localforage.getItem<Mensa[]>(CACHE_KEY);
+    const cachedTimestamp = await localforage.getItem<number>(CACHE_TIMESTAMP_KEY);
+    const now = Date.now();
+
+    if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
+      mensa.value = cachedData.find(mensa => mensa.id === route.params.id as string);
+    } else {
+      mensa.value = CANTEEN_DEBUG_DATA.find(mensa => mensa.id === route.params.id as string);;
+      await localforage.setItem(CACHE_KEY, CANTEEN_DEBUG_DATA);
+      await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
+    }
+    loading.value = false;
+  } catch (error) {
+    console.error('Error getting Data:', error);
+  }
+
   await fetchMenue();
   loading.value = false;
 };
@@ -227,7 +251,6 @@ onMounted(async () => {
   loadFavoriteMeals();
   await fetchData();
 });
-
 
 </script>
 
