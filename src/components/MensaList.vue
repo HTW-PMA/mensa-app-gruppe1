@@ -30,7 +30,7 @@
               <div v-if="getCurrentDayHours(mensa)">
                 <strong>{{ t('today') }}:</strong>
                 <div v-for="hour in getCurrentDayHours(mensa)" :key="hour.openAt">
-                  {{ t(`mensaDetails.businessHourType.${hour.businessHourType}`) }}: {{ hour.openAt }} - {{ hour.closeAt }}
+                  {{ hour.businessHourType }}: {{ hour.openAt }} - {{ hour.closeAt }}
                 </div>
               </div>
               <div v-else>
