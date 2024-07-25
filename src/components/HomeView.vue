@@ -8,7 +8,7 @@
       </div>
       <div v-if="error" class="error-state">
         <p>Error loading data: {{ error }}</p>
-        <button @click="retryFetch">Retry</button>
+        <button @click="fetchData">Retry</button>
       </div>
       <RouterLink v-if="nearestMensa && !loading && !error" :to="`/mensa/${nearestMensa.id}`" class="next-meal-container">
         <div class="next-meal-content">
@@ -31,7 +31,7 @@
     </div>
     <div v-if="error" class="error-state">
       <p>Error loading data: {{ error }}</p>
-      <button @click="retryFetch">Retry</button>
+      <button @click="fetchData">Retry</button>
     </div>
     <RouterLink v-if="nearestMensa && !loading && !error" :to="`/mensa/${nearestMensa.id}`" class="next-meal-container">
       <div class="next-meal-content">
@@ -68,8 +68,8 @@ import { useI18n } from 'vue-i18n';
 import { ref, onMounted, computed } from 'vue';
 import { Mensa } from '@/types/mensainterface';
 import localforage from 'localforage';
-import { fetchMensas } from '@/service/mensaService';
-import { SMALL_BREAKPOINT, windowService } from '@/service/windowService';
+import { fetchMensas } from '@/services/mensaService';
+import { SMALL_BREAKPOINT, windowService } from '@/services/windowService';
 import LocationIcon from '@/assets/icons/LocationIcon.vue';
 import ChevronRightIcon from '@/assets/icons/ChevronRightIcon.vue';
 import {CANTEEN_DEBUG_DATA} from "@/types/tmpDataMensa";
@@ -145,7 +145,6 @@ const findNearestMensa = (userLat: number, userLng: number) => {
   });
   distanceToNearestMensa.value = minDistance;
   nearestMensa.value = closestMensa;
-  console.log('Nearest Mensa:', closestMensa);
 };
 
 const getDistance = (lat1: number, lng1: number, lat2: number, lng2: number) => {
@@ -161,11 +160,29 @@ const getDistance = (lat1: number, lng1: number, lat2: number, lng2: number) => 
   return R * c; // Distance in km
 };
 
-const retryFetch = async () => {
+const fetchData = async () => {
   error.value = null;
   loading.value = true;
-  mensas.value = CANTEEN_DEBUG_DATA;
-  //await fetchMensasList();
+
+  try {
+    const cachedData = await localforage.getItem<Mensa[]>(CACHE_KEY);
+    const cachedTimestamp = await localforage.getItem<number>(CACHE_TIMESTAMP_KEY);
+    const now = Date.now();
+
+    if (cachedData && cachedTimestamp && (now - cachedTimestamp) < CACHE_EXPIRY_MS) {
+      mensas.value = cachedData;
+    } else {
+      const data = CANTEEN_DEBUG_DATA;
+      mensas.value = data;
+      await localforage.setItem(CACHE_KEY, data);
+      await localforage.setItem(CACHE_TIMESTAMP_KEY, now);
+    }
+    loading.value = false;
+  } catch (err) {
+    error.value = 'Error fetching or saving mensas';
+    loading.value = false;
+  }
+
   try {
     const userLocation = await getLocation();
     findNearestMensa(userLocation.latitude, userLocation.longitude);
@@ -176,7 +193,7 @@ const retryFetch = async () => {
 };
 
 onMounted(async () => {
-  await retryFetch();
+  await fetchData();
 });
 
 const firstThreeMensas = computed(() => {

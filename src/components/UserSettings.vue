@@ -15,13 +15,13 @@
 
     <div>
       <label>Lieblingsspeisen:</label>
-      <ul v-if="favoriteDishes.length > 0">
-        <li v-for="(dish, index) in favoriteDishes" :key="index">
-          {{ dish }}
+      <ul v-if="favoriteMeals.length > 0">
+        <li v-for="(dish, index) in favoriteMeals" :key="index">
+          {{ dish.name }}
           <button @click="removeFavoriteDish(index)">Entfernen</button>
         </li>
       </ul>
-      <p v-if="favoriteDishes.length === 0">Noch keine Speise favorisiert</p>
+      <p v-if="favoriteMeals.length === 0">Noch keine Speise favorisiert</p>
     </div>
 
     <div>
@@ -31,7 +31,7 @@
         Tägliche Benachrichtigungen
       </div>
       <div>
-        <input type="checkbox" v-model="notificationPreferences.newDishes" @change="updateNotificationPreferences"/>
+        <input type="checkbox" v-model="notificationPreferences.newMeals" @change="updateNotificationPreferences"/>
         Benachrichtigungen über neue Gerichte
       </div>
       <div>
@@ -63,18 +63,19 @@ const {t, locale} = useI18n();
 import DEIcon from "@/assets/icons/DEIcon.vue";
 import ENIcon from "@/assets/icons/ENIcon.vue";
 import {useI18n} from "vue-i18n";
+import {Meal} from "@/types/menueInterface";
 
 // LocalStorage Schlüssel
 const FAVORITE_MENSA_KEY = 'favoriteMensas';
-const FAVORITE_DISHES_KEY = 'favoriteDishes';
+const FAVORITE_DISHES_KEY = 'favoriteMeals';
 const NOTIFICATION_PREFERENCES_KEY = 'notificationPreferences';
 
 // Reactive Variablen
 const favoriteMensas = ref<any[]>([]);
-const favoriteDishes = ref<string[]>([]);
+const favoriteMeals = ref<Meal[]>([]);
 const notificationPreferences = ref({
   daily: false,
-  newDishes: false,
+  newMeals: false,
   offers: false
 });
 
@@ -84,9 +85,9 @@ const loadSettings = () => {
   if (savedFavoriteMensas) {
     favoriteMensas.value = JSON.parse(savedFavoriteMensas);
   }
-  const savedFavoriteDishes = localStorage.getItem(FAVORITE_DISHES_KEY);
-  if (savedFavoriteDishes) {
-    favoriteDishes.value = JSON.parse(savedFavoriteDishes);
+  const savedFavoriteMeals = localStorage.getItem(FAVORITE_DISHES_KEY);
+  if (savedFavoriteMeals) {
+    favoriteMeals.value = JSON.parse(savedFavoriteMeals);
   }
   const savedNotificationPreferences = localStorage.getItem(NOTIFICATION_PREFERENCES_KEY);
   if (savedNotificationPreferences) {
@@ -96,7 +97,7 @@ const loadSettings = () => {
 
 // Funktion zum Entfernen einer Lieblingsspeise
 const removeFavoriteDish = (index: number) => {
-  favoriteDishes.value.splice(index, 1);
+  favoriteMeals.value.splice(index, 1);
 };
 
 // Funktion zum Entfernen einer Lieblings-Mensa
@@ -136,7 +137,7 @@ watch(favoriteMensas, (newValue) => {
   localStorage.setItem(FAVORITE_MENSA_KEY, JSON.stringify(newValue));
 }, {deep: true});
 
-watch(favoriteDishes, (newValue) => {
+watch(favoriteMeals, (newValue) => {
   localStorage.setItem(FAVORITE_DISHES_KEY, JSON.stringify(newValue));
 }, {deep: true});
 

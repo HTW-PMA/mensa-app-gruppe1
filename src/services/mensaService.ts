@@ -6,7 +6,6 @@ const apiKey = 'KJFzc/5w7I61UPPRrP8Is1Fq8ZTgvx93RIcuckfzqXqeEYIuwcJq7Ut1ZfasBnIp
 export async function fetchMensaById(id: string): Promise<Mensa> {
     const url = new URL(apiUrl);
     url.searchParams.append('ID', id);
-    console.log("Fetching from URL:", url.toString());
 
     const response = await fetch(url.toString(), {
         headers: {

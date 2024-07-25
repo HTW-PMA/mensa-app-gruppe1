@@ -9,7 +9,6 @@ export async function fetchMenueByMensaId(id: string, startDate: string, endDate
   url.searchParams.append('canteenId', id);
   url.searchParams.append('startdate', startDate);
   url.searchParams.append('enddate', endDate);
-  console.log("Fetching from URL:", url.toString());
 
   const response = await fetch(url.toString(), {
     headers: {
